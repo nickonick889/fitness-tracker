@@ -4,6 +4,7 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const logger = require('morgan');
+const exerciseLibraryController = require('./controllers/exerciseLibraryController');
 
 mongoose.connect(process.env.MONGODB_URI);
 
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use(logger('dev'));
 
 // Routes go here
+app.use('/exercise-library', exerciseLibraryController);
 
 
 
