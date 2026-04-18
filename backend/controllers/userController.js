@@ -7,7 +7,7 @@ const SALT_ROUNDS = 10;
 const SECRET = process.env.JWT_SECRET;
 const router = express.Router();
 
-const create =async(req, res) => {
+const create = async(req, res) => {
     const { username, password }= req.body;
     try {
         if (username === " ") {
@@ -25,3 +25,7 @@ const create =async(req, res) => {
         res.status(500).json({ err });
     }
 };
+
+router.post("/", create);
+
+module.exports = router;
