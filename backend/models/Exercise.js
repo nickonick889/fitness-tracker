@@ -35,12 +35,6 @@ const exerciseSchema = new Schema({
   },
 });
 
-userSchema.set("toJSON", {
-  transform: (document, returnedObject) => {
-    delete returnedObject.hashedPassword;
-  },
-});
+const Exercise = mongoose.model('Exercise', exerciseSchema)
 
-const User = model("User", userSchema);
-
-module.exports = User;
+module.exports = Exercise
