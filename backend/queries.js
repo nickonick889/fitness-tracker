@@ -1,10 +1,10 @@
 /*------------------------------- Starter Code -------------------------------*/
 //@ts-check
-const dotenv = require("dotenv");
-dotenv.config();
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
-const User = require("./models/User");
+const dotenv = require('dotenv');
+dotenv.config({ path: './.env' });
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
+const User = require('./models/User');
 
 const SALT_ROUNDS = 10;
 
@@ -29,11 +29,11 @@ const connect = async () => {
 const createUsers = async () => {
   const usersData = [
     {
-      username: "simon",
+      username: "aloy",
       hashedPassword: await bcrypt.hash("123", SALT_ROUNDS),
     },
     {
-      username: "kerin",
+      username: "jr",
       hashedPassword: bcrypt.hashSync("456", SALT_ROUNDS),
     },
   ];
