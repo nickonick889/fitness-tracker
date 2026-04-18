@@ -1,10 +1,10 @@
 /*------------------------------- Starter Code -------------------------------*/
 //@ts-check
 const dotenv = require('dotenv');
-dotenv.config({ path: './.env' });
+dotenv.config();
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const User = require('./models/User');
+const User = require("./models/User");
 
 const SALT_ROUNDS = 10;
 
