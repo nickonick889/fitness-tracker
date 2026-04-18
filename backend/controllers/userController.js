@@ -28,4 +28,45 @@ const create = async(req, res) => {
 
 router.post("/", create);
 
+const create = async(req, res) => {
+    const { username, password }= req.body;
+    try {
+        if (username === " ") {
+            return res.status(400).json({ err: "blank name" });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+
+        const user = await User.create({ username, hashedPassword });
+
+        const payload = { user };
+        const token = jwt.sign(payload, SECRET);
+        res.status(201).json({ token });
+    } catch (err) {
+        res.status(500).json({ err });
+    }
+};
+
+const create = async(req, res) => {
+    const { username, password }= req.body;
+    try {
+        if (username === " ") {
+            return res.status(400).json({ err: "blank name" });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+
+        const user = await User.create({ username, hashedPassword });
+
+        const payload = { user };
+        const token = jwt.sign(payload, SECRET);
+        res.status(201).json({ token });
+    } catch (err) {
+        res.status(500).json({ err });
+    }
+};
+
+
+router.post("/", create);
+
 module.exports = router;
