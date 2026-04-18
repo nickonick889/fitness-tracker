@@ -153,3 +153,17 @@ Thursday
     - Set up MongoDB
     - Fetch Public API Exercises Database
     - decide on the components/features and create branch based on it
+
+
+4/18/26
+
+TodoAction
+
+1. Finish Models
+2. Come up with all the controllers we need
+3. Confirm Login feature
+4. Plan the 4 week preset template
+5. Test routes
+6. Do Sign up once, Bruno Test API -> MongoDB test if it reflects
+7. Do that for Program Template
+8. Do that for Start Session
