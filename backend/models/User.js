@@ -22,27 +22,14 @@ const userSchema = new Schema(
   }
 );
 
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("hashedPassword")) return next();
+userSchema.pre("save", async function () {
+  if (!this.isModified("hashedPassword")) return;
 
   try {
     const salt = await bcrypt.genSalt(10);
     this.hashedPassword = await bcrypt.hash(this.hashedPassword, salt);
-    next();
   } catch (err) {
-    next(err);
-  }
-});
-
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("hashedPassword")) return next();
-
-  try {
-    const salt = await bcrypt.genSalt(10);
-    this.hashedPassword = await bcrypt.hash(this.hashedPassword, salt);
-    next();
-  } catch (err) {
-    next(err);
+    console.log({err: err.message});
   }
 });
 
