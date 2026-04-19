@@ -1,17 +1,17 @@
 info:
-  name: Untitled
+  name: PostTestUsers
   type: http
   seq: 1
 
 http:
   method: POST
-  url: http://localhost:3000/exercise-library/import
+  url: http://localhost:3000/api/users/test
   headers:
     - name: Content-Type
       value: application/json
   body:
     type: json
-    data: '{"random": true, "limit": 200, "sourcePoolSize": 200, "pageSize": 25, "maxPages": 20}'
+    data: ""
   auth: inherit
 
 settings:
