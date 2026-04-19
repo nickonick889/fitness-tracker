@@ -5,7 +5,8 @@ const app = express();
 const mongoose = require('mongoose');
 const cors = require('cors');
 const logger = require('morgan');
-const userController = require('./controllers/userController');
+const userRoutes = require('./routes/userRoutes');
+const exerciseRoutes = require('./routes/exerciseRoutes');
 
 mongoose.set("debug", true);
 mongoose.connect(process.env.MONGODB_URI);
@@ -19,7 +20,8 @@ app.use(express.json());
 app.use(logger('dev'));
 
 // Routes go here
-app.use("/api/users", userController);
+app.use("/api/users", userRoutes);
+app.use("/api/exercises", exerciseRoutes);
 
 app.listen(3000, () => {
   console.log('The express app is ready!');

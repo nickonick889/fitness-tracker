@@ -5,10 +5,9 @@ const jwt = require("jsonwebtoken");
 
 const SALT_ROUNDS = 10;
 const SECRET = process.env.JWT_SECRET;
-const router = express.Router();
 
-const create = async(req, res) => {
-    const { username, password }= req.body;
+exports.create = async(req, res) => {
+    const { username, password } = req.body;
     try {
         if (username === " ") {
             return res.status(400).json({ err: "blank name" });
@@ -26,6 +25,31 @@ const create = async(req, res) => {
     }
 };
 
-router.post("/", create);
+exports.testCreate = async (req, res) => {
+    try {
+        const usersData = [
+            {
+            username: "aloy",
+            hashedPassword: await bcrypt.hash("123", SALT_ROUNDS),
+            },
+            {
+            username: "jr",
+            hashedPassword: bcrypt.hashSync("456", SALT_ROUNDS),
+            },
+        ];
 
-module.exports = router;
+        await User.deleteMany({});
+
+        const createdUsers = [];
+
+        for (let i = 0; i < usersData.length; i++) {
+            const user = await User.create(usersData[i]);
+            createdUsers.push(user);
+            console.log("new user", user);
+        }
+        
+        res.json(createdUsers);
+    } catch (err) {
+        res.status(500).json({ err: err.message });
+    }
+};
