@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const logger = require('morgan');
 
+// User defined logic
 const userRoutes = require('./routes/userRoutes');
 const loginRoutes = require('./controllers/loginController');
 const exerciseRoutes = require('./routes/exerciseRoutes');
