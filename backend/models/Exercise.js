@@ -31,10 +31,10 @@ const exerciseSchema = new Schema({
   },
   createdAt: {
     type: Date,
-    required: true,
+    default: Date.now,
   },
 });
 
-const Exercise = mongoose.model('Exercise', exerciseSchema)
+const Exercise = model('Exercise', exerciseSchema)
 
 module.exports = Exercise
