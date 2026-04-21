@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const logger = require('morgan');
 const userRoutes = require('./routes/userRoutes');
+const loginRoutes = require('./controllers/loginController');
 const exerciseRoutes = require('./routes/exerciseRoutes');
 const dayRoutes = require('./routes/dayRoutes');
 
@@ -22,6 +23,7 @@ app.use(logger('dev'));
 
 // Routes go here
 app.use("/api/users", userRoutes);
+app.use("/api/login", loginRoutes);
 app.use("/api/exercises", exerciseRoutes);
 app.use("/api/day", dayRoutes);
 
