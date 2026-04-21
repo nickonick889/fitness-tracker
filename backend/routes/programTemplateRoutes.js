@@ -5,5 +5,6 @@ const programTemplateController = require("../controllers/programTemplateControl
 
 router.post("/create", programTemplateController.createTemplate);
 router.post("/seed", programTemplateController.seedTemplate);
+router.post("/seed2", programTemplateController.seedTemplate2);
 
 module.exports = router;
