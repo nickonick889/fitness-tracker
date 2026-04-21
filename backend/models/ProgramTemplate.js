@@ -13,6 +13,21 @@ const templateExerciseSchema = new Schema(
       type: Number,
       required: true,
     },
+    targetReps: {
+      type: Number,
+      required: true,
+    }
+  },
+  { _id: false }
+);
+
+const templateDaySchema = new Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    exercises: [templateExerciseSchema]
   },
   { _id: false }
 );
@@ -24,7 +39,7 @@ const programTemplateSchema = new Schema(
       required: true,
       trim: true,
     },
-    exercises: [templateExerciseSchema],
+    days: [templateDaySchema],
   },
   {
     timestamps: true,

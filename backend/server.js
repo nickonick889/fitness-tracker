@@ -9,6 +9,7 @@ const userRoutes = require('./routes/userRoutes');
 const loginRoutes = require('./controllers/loginController');
 const exerciseRoutes = require('./routes/exerciseRoutes');
 const dayRoutes = require('./routes/dayRoutes');
+const programTemplateRoutes = require('./routes/programTemplateRoutes');
 
 mongoose.set("debug", true);
 mongoose.connect(process.env.MONGODB_URI);
@@ -26,6 +27,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/login", loginRoutes);
 app.use("/api/exercises", exerciseRoutes);
 app.use("/api/day", dayRoutes);
+app.use("/api/template", programTemplateRoutes);
 
 app.listen(3000, () => {
   console.log('The express app is ready!');
