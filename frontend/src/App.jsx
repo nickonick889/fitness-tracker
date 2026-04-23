@@ -8,6 +8,7 @@ import SignupForm from "./components/SignInForm";
 import { UserContext } from "./contexts/UserContext";
 import Navbar from "./components/Navbar";
 import Typography from "@mui/material/Typography";
+import Calendar from "./pages/CalendarPage";
 
 const App = () => {
   //? store the logged in UserID
