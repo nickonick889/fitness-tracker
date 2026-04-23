@@ -17,8 +17,7 @@ const App = () => {
     return (
       <>
         <h1>
-          Fitness-tracker for Aloysious handsome, Jia rui Handsome, Nicholas
-          Handsome
+          Fitness-tracker
         </h1>
         <Navbar />
         <Routes>

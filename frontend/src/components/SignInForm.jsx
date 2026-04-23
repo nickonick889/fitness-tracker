@@ -19,7 +19,7 @@ export default function SignupForm() {
   return (
     <form onSubmit={handleSubmit}>
       <fieldset>
-        <legend>LoginForm</legend>
+        <legend>SignupForm</legend>
 
         <label>
           Username:{" "}
