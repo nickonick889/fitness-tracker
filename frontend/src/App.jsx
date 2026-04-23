@@ -7,6 +7,7 @@ import Secret from "./components/Secret";
 import SignupForm from "./components/SignInForm";
 import { UserContext } from "./contexts/UserContext";
 import Navbar from "./components/Navbar";
+import Typography from "@mui/material/Typography";
 
 const App = () => {
   //? store the logged in UserID
@@ -16,9 +17,9 @@ const App = () => {
   if (!user) {
     return (
       <>
-        <h1>
-          Fitness-tracker
-        </h1>
+        <Typography variant="h4" sx={{ textAlign: "center", mt: 3, color: "#eaff00" }}>
+          FITNESS TRACKER
+        </Typography>
         <Navbar />
         <Routes>
           <Route path="/users/new" element={<SignupForm />} />
