@@ -29,10 +29,10 @@ const daySchema = new Schema({
   },
   createdAt: {
     type: Date,
-    required: true,
+    default: Date.now,
   },
 });
 
-const Day = mongoose.model('Day', daySchema)
+const Day = model('Day', daySchema)
 
 module.exports = Day

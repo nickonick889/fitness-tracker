@@ -27,12 +27,12 @@ const programSchema = new Schema({
   description: {
     type: String,
   },
-  createdAt: {
+ createdAt: {
     type: Date,
-    required: true,
+    default: Date.now,
   },
 });
 
-const Program = mongoose.model('Program', programSchema)
+const Program = model('Program', programSchema)
 
 module.exports = Program
