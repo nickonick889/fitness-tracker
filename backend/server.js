@@ -18,6 +18,7 @@ mongoose.set("debug", true);
 mongoose.connect(process.env.MONGODB_URI);
 
 mongoose.connection.on('connected', () => {
+
   console.log(`Connected to MongoDB ${mongoose.connection.name}.`);
 });
 
@@ -34,5 +35,5 @@ app.use("/api/template", programTemplateRoutes);
 app.use("/api/session", sessionRoutes);
 
 app.listen(3000, () => {
-  console.log('The express app is ready!');
+  console.log('Server: http://localhost:3000');
 });
