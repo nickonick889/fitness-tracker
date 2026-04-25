@@ -27,9 +27,13 @@ const daySchema = new Schema({
   notes: {
     type: String,
   },
-  createdAt: {
+  status: {
+    type: String,
+    default: "planned",
+  },
+  completedAt: {
     type: Date,
-    default: Date.now,
+    default: null,
   },
 });
 

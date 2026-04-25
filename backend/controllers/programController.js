@@ -3,10 +3,12 @@ const Program = require("../models/Program");
 exports.createNewProgram = async (req, res) => {
     try {
         const userId = req.params.userId;
+        const count = await Program.countDocuments({ user: userId });
+        const defaultName = `Program ${count + 1}`;
 
         const newProgram = await Program.create({
             user: userId,
-            name: req.body.name,
+            name: defaultName,
             days: [],
         });
 
