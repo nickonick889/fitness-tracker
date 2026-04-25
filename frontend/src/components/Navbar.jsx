@@ -6,12 +6,11 @@ import Box from "@mui/material/Box";
 import { NavLink } from "react-router-dom";
 // import logo from "../assets/logo.png";
 
-
 export default function Navbar() {
   const navItems = [
     { label: "Home", path: "/" },
     { label: "Workouts", path: "/workouts" },
-    { label: "Logging", path: "/logging" },
+    { label: "Session", path: "/session" },
     { label: "Calendar", path: "/calendar" },
   ];
 
@@ -39,7 +38,11 @@ export default function Navbar() {
           }}
         >
           {navItems.map((item) => (
-            <NavLink key={item.path} to={item.path} style={{ textDecoration: "none" }}>
+            <NavLink
+              key={item.path}
+              to={item.path}
+              style={{ textDecoration: "none" }}
+            >
               {({ isActive }) => (
                 <Button
                   sx={{

@@ -13,6 +13,7 @@ import WorkoutPage from "./pages/WorkoutPage";
 import ProgramPage from "./pages/ProgramPage";
 import BuildProgramPage from "./pages/BuildProgramPage";
 import HomePage from "./pages/HomePage";
+import SessionPage from "./pages/SessionPage";
 
 const App = () => {
   //? store the logged in UserID
@@ -37,7 +38,7 @@ const App = () => {
           <Route path="/workouts" element={<WorkoutPage />} />
           <Route path="/workouts/new" element={<BuildProgramPage />} />
           <Route path="/programs/:programId" element={<ProgramPage />} />
-          <Route path="/logging" element={<h1>Logging</h1>} />
+          <Route path="/session" element={<SessionPage />} />
           <Route path="/history" element={<h1>History</h1>} />
           <Route path="/calendar" element={<Calendar />} />
         </Routes>
@@ -67,7 +68,7 @@ const App = () => {
         <Route path="/workouts" element={<WorkoutPage />} />
         <Route path="/workouts/new" element={<BuildProgramPage />} />
         <Route path="/programs/:programId" element={<ProgramPage />} />
-        <Route path="/logging" element={<h1>Logging</h1>} />
+        <Route path="/session" element={<SessionPage />} />
         <Route path="/history" element={<h1>History</h1>} />
         <Route path="/calendar" element={<Calendar />} />
       </Routes>
