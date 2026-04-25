@@ -12,6 +12,10 @@ exports.createNewDay = async (req, res) => {
             exercises: [],
         });
 
+        await Program.findByIdAndUpdate(programId, {
+            $push: {days: newDay._id},
+        })
+
         res.status(200).json(newDay);
     } catch (err) {
         res.status(500).json({ error: err.message });

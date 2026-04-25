@@ -10,7 +10,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { createProgram } from "../services/workoutProgramStorage";
 
 const createExercise = () => ({ name: "", sets: "", reps: "" });
@@ -21,6 +21,11 @@ const createDay = () => ({
 
 export default function BuildProgramPage() {
   const navigate = useNavigate();
+
+  const [program, setProgram] = useState(null);
+  const [dayName, setDayName] = useState("");
+
+  
   const [programName, setProgramName] = useState("");
   const [days, setDays] = useState([createDay()]);
   const [errorMessage, setErrorMessage] = useState("");
