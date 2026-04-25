@@ -1,4 +1,5 @@
 const WorkoutSession = require("../models/Session");
+const Day = require("../models/Day");
 const express = require("express");
 
 exports.startSession = async (req, res) => {
@@ -17,6 +18,16 @@ exports.startSession = async (req, res) => {
     }
 }
 
+exports.updateSession = async (req, res) => {
+    const {sessionId, exercises} = req.body();
+
+    const updated = await WorkoutSession.findByIdAndUpdate(
+        sessionId,
+        {exercises},
+        {new: true},
+    )
+}
+
 exports.endSession = async (req, res) => {
     try {
         const { sessionId } = req.params;
@@ -24,7 +35,7 @@ exports.endSession = async (req, res) => {
         const session = await WorkoutSession.findByIdAndUpdate(
             sessionId,
             {
-                endTime: newDate(),
+                endTime: Date.now(),
                 status: "completed",
                 duration: session.endTime - session.startTime,
             },
@@ -35,7 +46,12 @@ exports.endSession = async (req, res) => {
             return res.status(404).json({message: "Session not found."});
         }
 
-        res.json(session);
+        await Day.findByIdAndUpdate(session.day, {
+            status: "completed",
+            completedAt: Date.now(),
+        })
+
+        res.status(200).json(session);
     } catch (err) {
         res.status(500).json({error: err.message});
     }

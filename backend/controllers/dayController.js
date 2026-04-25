@@ -3,10 +3,12 @@ const Day = require("../models/Day");
 exports.createNewDay = async (req, res) => {
     try {
         const programId = req.params.programId;
+        const count = await Day.countDocuments({ program: programId });
+        const defaultName = `Day ${count + 1}`;
 
         const newDay = await Day.create({
             program: programId,
-            name: req.body.name,
+            name: defaultName,
             exercises: [],
         });
 
