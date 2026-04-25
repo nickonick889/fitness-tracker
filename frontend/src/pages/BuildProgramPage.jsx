@@ -100,10 +100,10 @@ export default function BuildProgramPage() {
       return;
     }
 
-    createProgram({
+    createProgram ({
       name: programName.trim(),
       days: cleanDays,
-    });
+    })
 
     navigate("/workouts");
   };

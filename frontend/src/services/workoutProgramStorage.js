@@ -12,6 +12,25 @@ const readPrograms = () => {
   }
 };
 
+export const createProgram = async ({ userId }) => {
+  const res = await fetch(`/api/programs/${userId}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  return res.json();
+};
+
+export const createDay = async (programId, day) => {
+  const res = await fetch(`/api/programs/${programId}/days`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(day),
+  });
+
+  return res.json();
+}
+
 const writePrograms = (programs) => {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(programs));
 };
@@ -72,3 +91,33 @@ export const deleteProgram = (programId) => {
 
   return wasDeleted;
 };
+
+
+// In progress:
+// const handleSubmit = async (event) => {
+//   event.preventDefault();
+
+//   const cleanDays = days.map((day) => ({
+//     exercises: day.exercises
+//       .filter((exercise) => exercise.name.trim())
+//       .map((exercise) => ({
+//         name: exercise.name.trim(),
+//         sets: Number(exercise.sets),
+//         reps: Number(exercise.reps),
+//       })),
+//   })).filter((day) => day.exercises.length > 0);
+
+//   if (!programName.trim()) {
+//     setErrorMessage("Program name is required.");
+//     return;
+//   }
+
+//   if (cleanDays.length === 0) {
+//     setErrorMessage("At least one day with exercises is required.");
+//     return;
+//   }
+
+//   try{
+//     const program = await createProgram({ userId: 1 });
+//   }
+// }
