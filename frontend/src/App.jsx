@@ -9,6 +9,10 @@ import { UserContext } from "./contexts/UserContext";
 import Navbar from "./components/Navbar";
 import Typography from "@mui/material/Typography";
 import Calendar from "./pages/CalendarPage";
+import WorkoutPage from "./pages/WorkoutPage";
+import ProgramPage from "./pages/ProgramPage";
+import BuildProgramPage from "./pages/BuildProgramPage";
+import HomePage from "./pages/HomePage";
 
 const App = () => {
   //? store the logged in UserID
@@ -18,18 +22,24 @@ const App = () => {
   if (!user) {
     return (
       <>
-        <Typography variant="h4" sx={{ textAlign: "center", mt: 3, color: "#eaff00" }}>
+        <Typography
+          variant="h4"
+          sx={{ textAlign: "center", mt: 3, color: "#eaff00" }}
+        >
           FITNESS TRACKER
         </Typography>
         <Navbar />
         <Routes>
+          <Route path="/" element={<HomePage />} />
           <Route path="/users/new" element={<SignupForm />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/secret" element={<Secret />} />
-          <Route path="/Workouts" element={<h1>Workouts</h1>} />
-          <Route path="/Logging" element={<h1>Logging</h1>} />
-          <Route path="/History" element={<h1>History</h1>} />
-          <Route path="/Calendar" element={<Calendar />} />
+          <Route path="/workouts" element={<WorkoutPage />} />
+          <Route path="/workouts/new" element={<BuildProgramPage />} />
+          <Route path="/programs/:programId" element={<ProgramPage />} />
+          <Route path="/logging" element={<h1>Logging</h1>} />
+          <Route path="/history" element={<h1>History</h1>} />
+          <Route path="/calendar" element={<Calendar />} />
         </Routes>
       </>
     );
@@ -42,11 +52,24 @@ const App = () => {
 
   return (
     <>
-      <h1>Private</h1>
+      <Typography
+        variant="h4"
+        sx={{ textAlign: "center", mt: 3, color: "#eaff00" }}
+      >
+        FITNESS TRACKER
+      </Typography>
+      <Navbar />
       <button onClick={handleSignOut}>Sign out</button>
       <Routes>
+        <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/secret" element={<Secret />} />
+        <Route path="/workouts" element={<WorkoutPage />} />
+        <Route path="/workouts/new" element={<BuildProgramPage />} />
+        <Route path="/programs/:programId" element={<ProgramPage />} />
+        <Route path="/logging" element={<h1>Logging</h1>} />
+        <Route path="/history" element={<h1>History</h1>} />
+        <Route path="/calendar" element={<Calendar />} />
       </Routes>
     </>
   );
