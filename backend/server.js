@@ -1,30 +1,50 @@
 const dotenv = require('dotenv');
 dotenv.config();
 const express = require('express');
-const app = express();
 const mongoose = require('mongoose');
 const cors = require('cors');
 const logger = require('morgan');
 
-// User defined logic
+const app = express();
+
+// Routes
 const userRoutes = require('./routes/userRoutes');
-const loginRoutes = require('./controllers/loginController');
+const loginRoutes = require('./routes/loginRoutes');
 const exerciseRoutes = require('./routes/exerciseRoutes');
 const dayRoutes = require('./routes/dayRoutes');
 const programTemplateRoutes = require('./routes/programTemplateRoutes');
 const sessionRoutes = require('./routes/sessionRoutes');
 
+//Middleware
+app.use(cors());
+app.use(express.json());
+app.use(logger('dev'));
+
+// Debug middleware (see incoming data)
+app.use((req, res, next) => {
+  console.log("Method:", req.method);
+  console.log("URL:", req.url);
+  console.log("Body:", req.body);
+  next();
+});
+
+// Connect MongoDB
 mongoose.set("debug", true);
 mongoose.connect(process.env.MONGODB_URI);
 
 mongoose.connection.on('connected', () => {
-
   console.log(`Connected to MongoDB ${mongoose.connection.name}.`);
 });
 
-app.use(cors());
-app.use(express.json());
-app.use(logger('dev'));
+mongoose.connection.on('error', (err) => {
+  console.error("MongoDB error:", err);
+});
+
+// Example auth middleware (placeholder)
+app.use((req, res, next) => {
+  console.log("🔐 Auth check (placeholder)");
+  next();
+});
 
 // Routes go here
 app.use("/api/users", userRoutes);
@@ -33,6 +53,20 @@ app.use("/api/exercises", exerciseRoutes);
 app.use("/api/day", dayRoutes);
 app.use("/api/template", programTemplateRoutes);
 app.use("/api/session", sessionRoutes);
+
+// 404 HANDLER (ROUTE ERROR HANDLER)
+app.use((req, res) => {
+  res.status(404).json({ error: "Route not found" });
+});
+
+// ERROR HANDLER (Shows Error message)
+app.use((err, req, res, next) => {
+  console.error("ERROR:", err.message);
+
+  res.status(400).json({
+    error: err.message
+  });
+});
 
 app.listen(3000, () => {
   console.log('Server: http://localhost:3000');
