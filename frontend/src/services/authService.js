@@ -9,11 +9,13 @@ const signup = async (formData) => {
     body: JSON.stringify(formData),
   })
 
-  const data = await res.json();
+  const data = await res.json().catch(() => null);
 
   if (!res.ok) {
     throw new Error(data?.error || "Signup failed");
   }
+
+  localStorage.setItem("token", data.token);
 
   return data;
 }
@@ -27,12 +29,25 @@ const login = async (formData) => {
     body: JSON.stringify(formData),
   })
 
-  const data = await res.json()
+  const data = await res.json().catch(() => null);
 
   if (!res.ok) {
     throw new Error(data.error || "Login failed")
   }
+
+  localStorage.setItem("token", data.token);
+
   return data;
 }
 
-export { signup, login }
+// Get Token (For future requests to protected routes)
+const getToken = () => {
+  return localStorage.getItem("token");
+};
+
+// Logout
+const logout = () => {
+  localStorage.removeItem("token");
+};
+
+export { login, signup, getToken, logout };
