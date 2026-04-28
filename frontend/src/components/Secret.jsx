@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { UserContext } from "../contexts/UserContext";
-import { secret } from "../services/LoginService";
+import { secret } from "../services/authService";
 
 export default function Secret() {
   const [message, setMessage] = useState("");
