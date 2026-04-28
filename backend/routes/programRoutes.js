@@ -3,7 +3,8 @@ const router = express.Router();
 
 const programController = require("../controllers/programController");
 
-router.post("/:userId/createNewProg", programController.createNewProgram);
-router.post("/:programId/add-day", programController.addDayToProgram);
+router.post("/:userId/addProgram", programController.addProgram);
+router.post("/:programId/addDay", programController.addDayToProgram);
+router.delete("/:programId", programController.deleteProgram);
 
 module.exports = router;

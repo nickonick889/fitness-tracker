@@ -10,8 +10,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { createProgram } from "../services/workoutProgramStorage";
+import { useNavigate, useParams } from "react-router-dom";
 
 const createExercise = () => ({ name: "", sets: "", reps: "" });
 
@@ -20,7 +19,9 @@ const createDay = () => ({
 });
 
 export default function BuildProgramPage() {
+  const { userId } = useParams();
   const navigate = useNavigate();
+
   const [programName, setProgramName] = useState("");
   const [days, setDays] = useState([createDay()]);
   const [errorMessage, setErrorMessage] = useState("");
@@ -75,7 +76,7 @@ export default function BuildProgramPage() {
     });
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     const cleanDays = days
@@ -100,12 +101,29 @@ export default function BuildProgramPage() {
       return;
     }
 
-    createProgram({
-      name: programName.trim(),
-      days: cleanDays,
-    });
+    try {
+      const token = localStorage.getItem("token");
 
-    navigate("/workouts");
+      const res = await fetch(`/api/${userId}/addProgram`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name: programName.trim(),
+          days: cleanDays,
+        }),
+      });
+      
+      const newProgram = await res.json();
+      res.status(200).json(newProgram);
+
+      navigate("/workouts");
+    } catch (err) {
+      console.error(err);
+      setErrorMessage("Failed to create program.");
+    }
   };
 
   return (

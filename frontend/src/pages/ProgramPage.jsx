@@ -11,25 +11,38 @@ import {
   Typography,
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  deleteProgram,
-  getProgramById,
-  updateProgram,
-} from "../services/workoutProgramStorage";
 
 const createExercise = () => ({ name: "", sets: "", reps: "" });
-const createDay = () => ({ exercises: [createExercise()] });
+//const createDay = () => ({ exercises: [createExercise()] });
 
 export default function ProgramPage() {
   const { programId } = useParams();
   const navigate = useNavigate();
 
   const [program, setProgram] = useState(null);
+  const [dayName, setDayName] = useState("");
+
   const [statusMessage, setStatusMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    setProgram(getProgramById(programId));
+    const fetchProgram = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        const res = await fetch(`/api/programs/${programId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = await res.json();
+        setProgram(data);
+      } catch (err) {
+        console.error("Failed to load program:", err);
+      }
+    };
+    fetchProgram();
   }, [programId]);
 
   const updateExercise = (dayIndex, exerciseIndex, field, value) => {
@@ -78,11 +91,34 @@ export default function ProgramPage() {
     }));
   };
 
-  const addDay = () => {
-    setProgram((current) => ({
-      ...current,
-      days: [...current.days, createDay()],
-    }));
+  const handleAddDay = async () => {
+    if (!dayName.trim()) return;
+
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await fetch(`/api/programs/${programId}/addDay`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name: dayName,
+        }),
+      });
+
+      const newDay = await res.json();
+
+      setProgram((prev) => ({
+        ...prev,
+        days: [...prev.days, newDay],
+      }));
+
+      setDayName("");
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const removeDay = (dayIndex) => {
@@ -96,14 +132,24 @@ export default function ProgramPage() {
     });
   };
 
-  const handleDelete = () => {
-    const wasDeleted = deleteProgram(program.id);
-    if (wasDeleted) {
+  const handleDelete = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      await fetch(`/api/programs/${program.id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
       navigate("/workouts");
+    } catch (err) {
+      console.error(err);
     }
   };
 
-  const handleSave = (event) => {
+  const handleSave = async (event) => {
     event.preventDefault();
 
     if (!program.name.trim()) {
@@ -111,6 +157,8 @@ export default function ProgramPage() {
       setStatusMessage("");
       return;
     }
+
+    const token = localStorage.getItem("token");
 
     const cleanDays = program.days
       .map((day) => ({
@@ -130,9 +178,15 @@ export default function ProgramPage() {
       return;
     }
 
-    const updated = updateProgram(program.id, {
-      name: program.name.trim(),
-      days: cleanDays,
+    const updated = await fetch(`/api/programs/${program.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        name: program.name,
+       }),
     });
 
     setProgram(updated);
@@ -287,7 +341,7 @@ export default function ProgramPage() {
               </Box>
             ))}
 
-            <Button variant="outlined" onClick={addDay}>
+            <Button variant="outlined" onClick={handleAddDay}>
               Add Day
             </Button>
 
