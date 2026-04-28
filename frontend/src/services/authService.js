@@ -32,7 +32,7 @@ const login = async (formData) => {
   const data = await res.json().catch(() => null);
 
   if (!res.ok) {
-    throw new Error(data.error || "Login failed")
+    throw new Error(data?.error || "Login failed")
   }
 
   localStorage.setItem("token", data.token);
@@ -50,25 +50,5 @@ const logout = () => {
   localStorage.removeItem("token");
 };
 
-const secret = async () => {
-  const url = `${BASE_URL}/login/secret`;
-  const token = localStorage.getItem("token");
-  try {
-    const response = await fetch(url, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
-    }
 
-    const result = await response.json();
-    return result;
-  } catch (error) {
-    console.error(error.message);
-  }
-}
-
-export { login, signup, getToken, logout, secret };
+export { login, signup, getToken, logout};
