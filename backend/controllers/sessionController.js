@@ -14,7 +14,7 @@ exports.getSessions = async (req, res) => {
 exports.startSession = async (req, res) => {
     try {
         const session = await WorkoutSession.create({
-            user: req.params.userId, 
+            user: req.user.userId, 
             program: req.body.programId,
             day: req.body.dayId,
             startTime: new Date(),

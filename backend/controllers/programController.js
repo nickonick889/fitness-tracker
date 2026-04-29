@@ -2,7 +2,7 @@ const Program = require("../models/Program");
 
 exports.addProgram = async (req, res) => {
     try {
-        const userId = req.params.userId;
+        const userId = req.user.userId;
         const count = await Program.countDocuments({ user: userId });
         const defaultName = `Program ${count + 1}`;
 

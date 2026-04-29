@@ -13,6 +13,7 @@ const loginRoutes = require('./routes/loginRoutes');
 const exerciseRoutes = require('./routes/exerciseRoutes');
 const dayRoutes = require('./routes/dayRoutes');
 const programTemplateRoutes = require('./routes/programTemplateRoutes');
+const programRoutes = require('./routes/programRoutes');
 const sessionRoutes = require('./routes/sessionRoutes');
 
 //Middleware
