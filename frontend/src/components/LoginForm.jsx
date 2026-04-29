@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import { login } from "../services/authService";
-import { getSession } from "../services/sessionService";
+
 
 import {
   Alert,
@@ -39,10 +39,8 @@ export default function LoginForm() {
     e.preventDefault();
 
     try {
-      await login(formData);
-
-      const data = await getSession();
-
+      const data = await login(formData);
+      
       setUser(data.user);
 
       navigate("/"); // or wherever

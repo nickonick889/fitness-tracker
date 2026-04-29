@@ -40,12 +40,6 @@ mongoose.connection.on('error', (err) => {
   console.error("MongoDB error:", err);
 });
 
-// Example auth middleware (placeholder)
-app.use((req, res, next) => {
-  console.log("🔐 Auth check (placeholder)");
-  next();
-});
-
 // Routes go here
 app.use("/api/users", userRoutes);
 app.use("/api/login", loginRoutes);

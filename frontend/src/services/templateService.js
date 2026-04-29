@@ -1,8 +1,7 @@
-// services/templateService.js
 import { request } from "./apiService";
 
 const createTemplate = (data) =>
-  request("/api/template", "POST", data);
+  request("/api/template/create", "POST", data);
 
 const seedTemplate = () =>
   request("/api/template/seed", "POST");

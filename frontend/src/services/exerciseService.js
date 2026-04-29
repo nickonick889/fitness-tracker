@@ -1,7 +1,6 @@
-// services/exerciseService.js
 import { request } from "./apiService";
 
 const getExercises = () =>
-  request("/api/exercises");
+  request("/api/exercises/all");
 
 export { getExercises };

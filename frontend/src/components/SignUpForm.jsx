@@ -1,7 +1,6 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { signup } from "../services/authService";
-import { getSession } from "../services/sessionService";
 import { UserContext } from "../contexts/UserContext";
 
 export default function SignupForm() {
@@ -27,16 +26,13 @@ export default function SignupForm() {
 
     try {
       //  Step 1: signup → token stored (authService handles it)
-      await signup(formData);
-
-      //  Step 2: fetch user using token
-      const data = await getSession();
+      const data = await signup(formData);
 
       //  Step 3: update global user state
       setUser(data.user);
 
       //  Step 4: redirect
-      navigate("/dashboard");
+      navigate("/");
 
     } catch (err) {
       console.error(err.message);

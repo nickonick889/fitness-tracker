@@ -1,8 +1,9 @@
-
 import { request } from "./apiService";
 
-const getSession = () => {
-  return request("/api/session"); 
-};
+const startSession = (data) =>
+  request("/api/session/start", "POST", data);
 
-export { getSession };
+const endSession = (data) =>
+  request("/api/session/end", "POST", data);
+
+export { startSession, endSession };

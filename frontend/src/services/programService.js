@@ -1,8 +1,7 @@
-// For Program + Day Controller
 import { request } from "./apiService";
 
 const createProgram = (userId) =>
-  request(`/api/program/${userId}`, "POST");
+  request(`/api/program/${userId}/addProgram`, "POST");
 
 const deleteProgram = (programId) =>
   request(`/api/program/${programId}`, "DELETE");
