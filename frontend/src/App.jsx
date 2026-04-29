@@ -1,7 +1,7 @@
 // src/App.jsx
 
 import { useContext } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import LoginForm from "./components/LoginForm";
 import Secret from "./components/Secret";
 import SignupForm from "./components/SignUpForm";
@@ -49,6 +49,7 @@ const App = () => {
   const handleSignOut = () => {
     localStorage.removeItem("token");
     setUser(null);
+    Navigate("/");
   };
 
   return (
