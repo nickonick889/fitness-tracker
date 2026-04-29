@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { UserContext } from "./contexts/UserContext";
-
+import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
 import LoginForm from "./components/LoginForm";
 import SignupForm from "./components/SignUpForm";
@@ -49,16 +49,16 @@ const App = () => {
       {/* 🔹 ROUTES */}
       <Routes>
         {/* Public */}
-        <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/users/new" element={<SignupForm />} />
 
-        {/* App pages (no frontend protection) */}
-        <Route path="/workouts" element={<WorkoutPage />} />
-        <Route path="/workouts/new" element={<BuildProgramPage />} />
-        <Route path="/programs/:programId" element={<ProgramPage />} />
-        <Route path="/session" element={<SessionPage />} />
-        <Route path="/calendar" element={<Calendar />} />
+        {/* App pages (Protected Routes) */}
+        <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+        <Route path="/workouts" element={<ProtectedRoute><WorkoutPage /></ProtectedRoute>} />
+        <Route path="/workouts/new" element={<ProtectedRoute><BuildProgramPage /></ProtectedRoute>} />
+        <Route path="/programs/:programId" element={<ProtectedRoute><ProgramPage /></ProtectedRoute>} />
+        <Route path="/session" element={<ProtectedRoute><SessionPage /></ProtectedRoute>} />
+        <Route path="/calendar" element={<ProtectedRoute><Calendar /></ProtectedRoute>} />
 
         {/* fallback */}
         <Route path="*" element={<h1>404 Not Found</h1>} />
