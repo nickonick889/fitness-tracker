@@ -6,4 +6,7 @@ const startSession = (data) =>
 const endSession = (data) =>
   request("/api/session/end", "POST", data);
 
-export { startSession, endSession };
+const getSessions = () =>
+  request("/api/session")
+
+export { startSession, endSession, getSessions };
