@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { UserContext } from "./contexts/UserContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
@@ -16,15 +16,8 @@ import Calendar from "./pages/CalendarPage";
 import Typography from "@mui/material/Typography";
 
 const App = () => {
-  const { user, setUser } = useContext(UserContext);
-  const navigate = useNavigate();
+  const { user, setUser } = useContext(UserContext); //it's not used, not sure if you guys will use it later
 
-  // 🔥 logout
-  const handleSignOut = () => {
-    localStorage.removeItem("token");
-    setUser(null);
-    navigate("/login");
-  };
 
   return (
     <>
@@ -38,13 +31,6 @@ const App = () => {
 
       {/* 🔹 NAVBAR */}
       <Navbar />
-
-      {/* 🔹 SHOW LOGOUT ONLY IF USER EXISTS */}
-      {user && (
-        <div style={{ textAlign: "center", margin: "10px" }}>
-          <button onClick={handleSignOut}>Sign out</button>
-        </div>
-      )}
 
       {/* 🔹 ROUTES */}
       <Routes>

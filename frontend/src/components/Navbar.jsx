@@ -5,6 +5,7 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import { NavLink } from "react-router-dom";
 // import logo from "../assets/logo.png";
+import { getToken, logout } from "../services/authService";
 
 export default function Navbar() {
   const navItems = [
@@ -13,6 +14,13 @@ export default function Navbar() {
     { label: "Session", path: "/session" },
     { label: "Calendar", path: "/calendar" },
   ];
+
+  const token = getToken();
+
+  const handleLogout = () => {
+    logout(); // remove token
+    window.location.href = "/login"; // redirect
+  };
 
   return (
     <AppBar
@@ -24,8 +32,12 @@ export default function Navbar() {
         borderBottom: "1px solid rgba(234,255,0,0.1)",
       }}
     >
-      <Toolbar sx={{ display: "flex", justifyContent: "center" }}>
-        {/* Center container */}
+      <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+        
+        {/* LEFT spacer (optional for symmetry) */}
+        <Box sx={{ width: 100 }} />
+
+        {/* CENTER NAV */}
         <Box
           sx={{
             display: "flex",
@@ -38,11 +50,7 @@ export default function Navbar() {
           }}
         >
           {navItems.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              style={{ textDecoration: "none" }}
-            >
+            <NavLink key={item.path} to={item.path} style={{ textDecoration: "none" }}>
               {({ isActive }) => (
                 <Button
                   sx={{
@@ -70,6 +78,27 @@ export default function Navbar() {
             </NavLink>
           ))}
         </Box>
+
+        {/* 🔥 RIGHT SIDE AUTH BUTTON */}
+        <Box>
+          {token && (
+            <Button
+              onClick={handleLogout}
+              sx={{
+                color: "#eaff00",
+                border: "1px solid rgba(234,255,0,0.3)",
+                borderRadius: "999px",
+                textTransform: "none",
+                px: 2,
+                "&:hover": {
+                  background: "rgba(234,255,0,0.08)",
+                },
+              }}
+            >
+              Sign Out
+            </Button>
+          )}
+        </Box>        
       </Toolbar>
     </AppBar>
   );
