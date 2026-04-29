@@ -7,17 +7,17 @@ const SECRET = process.env.JWT_SECRET;
 
 exports.create = async (req, res) => {
   try {
-    // 🔹 1. Extract input
+    // Extract input
     const { username, password } = req.body;
 
-    // 🔹 2. Validate input
+    // Validate input
     if (!username || !password) {
       return res.status(400).json({
         error: "Username and password required",
       });
     }
 
-    // 🔹 3. Check duplicate user
+    // Check duplicate user
     const existingUser = await User.findOne({ username });
 
     if (existingUser) {
@@ -26,16 +26,16 @@ exports.create = async (req, res) => {
       });
     }
 
-    // 🔹 4. Hash password
+    // Hash password
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
 
-    // 🔹 5. Create user
+    // Create user
     const user = await User.create({
       username,
       hashedPassword,
     });
 
-    // 🔹 6. Create token
+    // Create token
     const payload = {
       userId: user._id,
       username: user.username,
@@ -43,7 +43,7 @@ exports.create = async (req, res) => {
 
     const token = jwt.sign(payload, SECRET, { expiresIn: "1h" });
 
-    // 🔹 7. Send response (token + user)
+    // Send response (token + user)
     res.status(201).json({
       token,
       user: {

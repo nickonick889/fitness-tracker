@@ -21,7 +21,7 @@ export default function SessionPage() {
         Session
       </Typography>
 
-      {/* ✅ If no sessions */}
+      
       {sessions.length === 0 ? (
         <Typography sx={{ mt: 1, color: "#ddd" }}>
           Track your workout session details here.

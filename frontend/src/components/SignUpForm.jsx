@@ -25,13 +25,13 @@ export default function SignupForm() {
     e.preventDefault();
 
     try {
-      //  Step 1: signup → token stored (authService handles it)
+      
       const data = await signup(formData);
 
-      //  Step 3: update global user state
+      
       setUser(data.user);
 
-      //  Step 4: redirect
+      
       navigate("/");
 
     } catch (err) {

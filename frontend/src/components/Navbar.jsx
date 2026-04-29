@@ -34,10 +34,10 @@ export default function Navbar() {
     >
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
         
-        {/* LEFT spacer (optional for symmetry) */}
+        
         <Box sx={{ width: 100 }} />
 
-        {/* CENTER NAV */}
+        
         <Box
           sx={{
             display: "flex",
@@ -79,7 +79,7 @@ export default function Navbar() {
           ))}
         </Box>
 
-        {/* 🔥 RIGHT SIDE AUTH BUTTON */}
+        
         <Box>
           {token && (
             <Button

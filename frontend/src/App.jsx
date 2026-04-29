@@ -21,7 +21,7 @@ const App = () => {
 
   return (
     <>
-      {/* 🔹 HEADER */}
+      
       <Typography
         variant="h4"
         sx={{ textAlign: "center", mt: 3, color: "#eaff00" }}
@@ -29,10 +29,10 @@ const App = () => {
         FITNESS TRACKER
       </Typography>
 
-      {/* 🔹 NAVBAR */}
+      
       <Navbar />
 
-      {/* 🔹 ROUTES */}
+      
       <Routes>
         {/* Public */}
         <Route path="/login" element={<LoginForm />} />
@@ -46,7 +46,7 @@ const App = () => {
         <Route path="/session" element={<ProtectedRoute><SessionPage /></ProtectedRoute>} />
         <Route path="/calendar" element={<ProtectedRoute><Calendar /></ProtectedRoute>} />
 
-        {/* fallback */}
+        
         <Route path="*" element={<h1>404 Not Found</h1>} />
       </Routes>
     </>
