@@ -2,10 +2,19 @@ const WorkoutSession = require("../models/Session");
 const Day = require("../models/Day");
 const express = require("express");
 
+exports.getSessions = async (req, res) => {
+  try {
+    const sessions = await WorkoutSession.find({ user: req.user.userId });
+    res.json(sessions);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 exports.startSession = async (req, res) => {
     try {
         const session = await WorkoutSession.create({
-            user: req.params.userId,
+            user: req.params.userId, 
             program: req.body.programId,
             day: req.body.dayId,
             startTime: new Date(),

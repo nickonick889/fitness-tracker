@@ -6,5 +6,6 @@ const sessionController = require("../controllers/sessionController");
 
 router.post("/start", verifyToken, sessionController.startSession);
 router.post("/end", verifyToken, sessionController.endSession);
+router.get("/", verifyToken, sessionController.getSessions);
 
 module.exports = router;
