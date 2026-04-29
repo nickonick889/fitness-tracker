@@ -4,7 +4,7 @@ import { useContext } from "react";
 import { Route, Routes } from "react-router-dom";
 import LoginForm from "./components/LoginForm";
 import Secret from "./components/Secret";
-import SignupForm from "./components/SignInForm";
+import SignupForm from "./components/SignUpForm";
 import { UserContext } from "./contexts/UserContext";
 import Navbar from "./components/Navbar";
 import Typography from "@mui/material/Typography";
