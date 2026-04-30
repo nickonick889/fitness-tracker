@@ -32,12 +32,56 @@ export default function Navbar() {
         borderBottom: "1px solid rgba(234,255,0,0.1)",
       }}
     >
-      <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+      <Toolbar sx={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", alignItems: "center", minHeight: 64 }}>
         
-        
-        <Box sx={{ width: 100 }} />
+        <Box sx={{ width: 120 }} />
+
+        <Typography
+          variant="h4"
+          sx={{ 
+            fontWeight: 800,
+            color: "#eaff00",
+            letterSpacing: 1,
+            textAlign: "center",
+            whiteSpace: "nowrap",
+           }}
+        >
+          FITNESS TRACKER
+        </Typography>
 
         
+        <Box sx={{ 
+          display: "flex",
+          justifyContent: "flex-end",
+          width: "100%",
+          }}>
+          {token && (
+            <Button
+              onClick={handleLogout}
+              sx={{
+                color: "#eaff00",
+                border: "1px solid rgba(234,255,0,0.3)",
+                borderRadius: "999px",
+                textTransform: "none",
+                px: 2,
+                "&:hover": {
+                  background: "rgba(234,255,0,0.08)",
+                },
+              }}
+            >
+              Sign Out
+            </Button>
+          )}
+        </Box>        
+      </Toolbar>
+
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          pb: 1.5,
+        }}
+      >
         <Box
           sx={{
             display: "flex",
@@ -50,7 +94,11 @@ export default function Navbar() {
           }}
         >
           {navItems.map((item) => (
-            <NavLink key={item.path} to={item.path} style={{ textDecoration: "none" }}>
+            <NavLink
+              key={item.path}
+              to={item.path}
+              style={{ textDecoration: "none" }}
+            >
               {({ isActive }) => (
                 <Button
                   sx={{
@@ -78,28 +126,7 @@ export default function Navbar() {
             </NavLink>
           ))}
         </Box>
-
-        
-        <Box>
-          {token && (
-            <Button
-              onClick={handleLogout}
-              sx={{
-                color: "#eaff00",
-                border: "1px solid rgba(234,255,0,0.3)",
-                borderRadius: "999px",
-                textTransform: "none",
-                px: 2,
-                "&:hover": {
-                  background: "rgba(234,255,0,0.08)",
-                },
-              }}
-            >
-              Sign Out
-            </Button>
-          )}
-        </Box>        
-      </Toolbar>
+      </Box>
     </AppBar>
   );
 }

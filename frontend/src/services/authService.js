@@ -48,6 +48,7 @@ const getToken = () => {
 // Logout
 const logout = () => {
   localStorage.removeItem("token");
+  localStorage.removeItem("user");
 };
 
 
