@@ -11,7 +11,7 @@ import { Link as RouterLink } from "react-router-dom";
 
 export default function HomePage() {
   return (
-    <Container maxWidth="md" sx={{ py: 6 }}>
+    <Container maxWidth="md" sx={{ py: 6, minHeight: "80vh" }}>
       <Card
         sx={{
           border: "1px solid rgba(234,255,0,0.2)",

@@ -50,7 +50,7 @@ export default function LoginForm() {
   };
 
   return (
-    <Container maxWidth="sm" sx={{ py: 8 }}>
+    <Container maxWidth="sm" sx={{ py: 6, minHeight: "80vh" }}>
       <Card
         sx={{
           border: "1px solid rgba(234,255,0,0.2)",
@@ -92,17 +92,42 @@ export default function LoginForm() {
               autoComplete="current-password"
             />
 
-            <Button
-              type="submit"
-              variant="contained"
-              size="large"
-              sx={{
-                fontWeight: 700,
-                letterSpacing: 1,
-              }}
-            >
-              Sign In
-            </Button>
+            <Stack spacing={2}>
+              <Button
+                type="submit"
+                variant="contained"
+                size="large"
+                sx={{
+                  fontWeight: 700,
+                  letterSpacing: 1,
+                }}
+              >
+                Sign In
+              </Button>
+
+              <Stack
+                direction="row"
+                spacing={1}
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Typography variant="body2" sx={{ opacity: 0.7 }}>
+                  No account?
+                </Typography>
+
+                <Button
+                  variant="text"
+                  size="small"
+                  onClick={() => navigate("/users/new")}
+                  sx={{
+                    fontWeight: 700,
+                    textTransform: "none",
+                  }}
+                >
+                  Sign Up
+                </Button>
+              </Stack>
+            </Stack>
           </Stack>
         </CardContent>
       </Card>

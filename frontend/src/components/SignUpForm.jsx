@@ -3,6 +3,18 @@ import { useNavigate } from "react-router-dom";
 import { signup } from "../services/authService";
 import { UserContext } from "../contexts/UserContext";
 
+import {
+  Alert,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Container,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
+
 export default function SignupForm() {
   const { setUser } = useContext(UserContext);
   const navigate = useNavigate();
@@ -41,37 +53,62 @@ export default function SignupForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <fieldset>
-        <legend>Signup</legend>
+    <Container maxWidth="sm" sx={{ py: 6, minHeight: "80vh" }}>
+      <Card
+        sx={{
+          border: "1px solid rgba(234,255,0,0.2)",
+          background: "linear-gradient(180deg, #111 0%, #0b0b0b 100%)",
+          backdropFilter: "blur(10px)",
+        }}
+      >
+        <CardContent sx={{ p: 4 }}>
+          <Stack spacing={3} component="form" onSubmit={handleSubmit}>
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: 800,
+                textAlign: "center",
+                color: "primary.main",
+              }}
+            >
+              Sign Up
+            </Typography>
 
-        <label>
-          Username:
-          <input
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-          />
-        </label>
+            {message && <Alert severity="error">{message}</Alert>}
 
-        <br />
+            <TextField
+              label="Username"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              fullWidth
+              autoComplete="username"
+            />
 
-        <label>
-          Password:
-          <input
-            name="password"
-            type="password"
-            value={formData.password}
-            onChange={handleChange}
-          />
-        </label>
+            <TextField
+              label="Password"
+              name="password"
+              type="password"
+              value={formData.password}
+              onChange={handleChange}
+              fullWidth
+              autoComplete="current-password"
+            />
 
-        <br />
-
-        <button>Sign Up</button>
-
-        <p>{message}</p>
-      </fieldset>
-    </form>
+            <Button
+              type="submit"
+              variant="contained"
+              size="large"
+              sx={{
+                fontWeight: 700,
+                letterSpacing: 1,
+              }}
+            >
+              Sign Up
+            </Button>
+          </Stack>
+        </CardContent>
+      </Card>
+    </Container>
   );
 }

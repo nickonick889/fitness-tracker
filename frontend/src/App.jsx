@@ -22,14 +22,6 @@ const App = () => {
   return (
     <>
       
-      <Typography
-        variant="h4"
-        sx={{ textAlign: "center", mt: 3, color: "#eaff00" }}
-      >
-        FITNESS TRACKER
-      </Typography>
-
-      
       <Navbar />
 
       
