@@ -11,6 +11,20 @@ exports.getSessions = async (req, res) => {
   }
 };
 
+exports.getSessionById = async (req, res) => {
+  try {
+    const session = await WorkoutSession.findById(req.params.sessionId);
+
+    if (!session) {
+      return res.status(404).json({ error: "Session not found" });
+    }
+
+    res.json(session);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 exports.startSession = async (req, res) => {
     try {
         const session = await WorkoutSession.create({
