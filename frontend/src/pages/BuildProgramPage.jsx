@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { getTemplates } from "../services/templateService";
+import { useEffect, useState } from "react";
 import {
   Alert,
   Box,
@@ -21,6 +22,36 @@ const createDay = () => ({
 export default function BuildProgramPage() {
   const { userId } = useParams();
   const navigate = useNavigate();
+
+  const [templates, setTemplates] = useState([]);
+
+  useEffect(() => {
+    const fetchTemplates = async () => {
+      try {
+        const data = await getTemplates();
+        setTemplates(data);
+      } catch (err) {
+        console.error(err.message);
+      }
+    };
+
+    fetchTemplates();
+  }, []);
+
+  const handleUseTemplate = (template) => {
+  setProgramName(template.name);
+
+  const formattedDays = template.days.map((day) => ({
+    name: day.name,
+    exercises: day.exercises.map((ex) => ({
+      name: ex.name || "",
+      sets: ex.sets || 3,
+      reps: ex.reps || 10,
+    })),
+  }));
+
+  setDays(formattedDays);
+};
 
   const [programName, setProgramName] = useState("");
   const [days, setDays] = useState([createDay()]);
@@ -142,6 +173,46 @@ export default function BuildProgramPage() {
             >
               Build Your Workout Program
             </Typography>
+
+            <Typography
+              variant="h6"
+              sx={{ color: "primary.main", fontWeight: 700 }}
+            >
+              Choose a Template
+            </Typography>
+
+            <Stack spacing={2}>
+              {templates.map((template) => (
+                <Card
+                  key={template._id}
+                  sx={{
+                    p: 2,
+                    border: "1px solid rgba(255,255,255,0.14)",
+                    background: "rgba(255,255,255,0.02)",
+                  }}
+                >
+                  <Stack spacing={1}>
+                    <Typography variant="subtitle1" fontWeight={700}>
+                      {template.name}
+                    </Typography>
+
+                    {template.days?.map((day, i) => (
+                      <Typography key={i} variant="body2">
+                        • {day.name}
+                      </Typography>
+                    ))}
+
+                    <Button
+                      variant="contained"
+                      size="small"
+                      onClick={() => handleUseTemplate(template)}
+                    >
+                      Use Template
+                    </Button>
+                  </Stack>
+                </Card>
+              ))}
+            </Stack>
 
             <TextField
               label="Program Name"

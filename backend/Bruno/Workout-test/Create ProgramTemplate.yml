@@ -1,0 +1,19 @@
+info:
+  name: Create ProgramTemplate
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:3000/api/template/seed
+  body:
+    type: json
+    data: ""
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+​

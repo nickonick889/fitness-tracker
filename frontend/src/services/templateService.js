@@ -6,4 +6,7 @@ const createTemplate = (data) =>
 const seedTemplate = () =>
   request("/api/template/seed", "POST");
 
-export { createTemplate, seedTemplate };
+const getTemplates = () => 
+  request("/api/template");
+
+export { createTemplate, seedTemplate, getTemplates };

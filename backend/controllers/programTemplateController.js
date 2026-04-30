@@ -16,9 +16,9 @@ exports.createTemplate = async (req, res) => {
 exports.seedTemplate = async (req, res) => {
   try {
     // Fetching exercise data from DB
-    const chest = await ExerciseLibrary.findOne({name: "Diamond Press"});
-    const back = await ExerciseLibrary.findOne({name: "One Arm Bent-over Row"});
-    const legs = await ExerciseLibrary.findOne({name: "Sissy Squat"});
+    const chest = await ExerciseLibrary.findOne({name: "Neck Side Stretch"});
+    const back = await ExerciseLibrary.findOne({name: "Arnold Press"});
+    const legs = await ExerciseLibrary.findOne({name: "Elliptical Machine Walk"});
 
     if (!chest || !back || !legs) {
         return res.status(404).json({ message: "No exercise found in library." });
@@ -161,6 +161,15 @@ exports.seedTemplate2 = async (req, res) => {
     const created = await ProgramTemplate.create(sample);
 
     res.json(created);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.getTemplates = async (req, res) => {
+  try {
+    const templates = await ProgramTemplate.find();
+    res.json(templates);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
