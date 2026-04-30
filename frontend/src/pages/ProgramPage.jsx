@@ -116,8 +116,6 @@ export default function ProgramPage() {
         ...prev,
         days: [...(prev.days || []), newDay],
       }));
-
-      setDayName("");
     } catch (err) {
       console.error("Failed to add day:", err);
     }
