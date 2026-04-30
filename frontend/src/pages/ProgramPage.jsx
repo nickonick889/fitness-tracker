@@ -20,7 +20,6 @@ export default function ProgramPage() {
   const BASE_URL = "http://localhost:3000";
 
   const [program, setProgram] = useState(null);
-  const [dayName, setDayName] = useState("");
   const [isEditingName, setIsEditingName] = useState(false);
   const [nameInput, setNameInput] = useState("");
 
