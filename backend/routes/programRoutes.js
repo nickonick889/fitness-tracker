@@ -6,7 +6,9 @@ const programController = require("../controllers/programController");
 
 router.post("/new", verifyToken, programController.addProgram);
 router.post("/addDay", verifyToken, programController.addDayToProgram);
+router.put("/:programId", verifyToken, programController.updateProgram);
 router.delete("/:programId", verifyToken, programController.deleteProgram);
 router.get("/", verifyToken, programController.getPrograms);
+router.get("/:programId", verifyToken, programController.getProgramById);
 
 module.exports = router;

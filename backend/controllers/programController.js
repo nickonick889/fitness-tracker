@@ -19,6 +19,25 @@ exports.addProgram = async (req, res) => {
     }
 }
 
+exports.updateProgram = async (req, res) => {
+  try {
+    const updated = await Program.findOneAndUpdate(
+      {
+        _id: req.params.programId,
+        user: req.user.userId,
+      },
+      {
+        name: req.body.name,
+      },
+      { new: true }
+    );
+
+    res.json(updated);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 exports.getPrograms = async (req, res) => {
     try {
         const userId = req.user.userId;
@@ -29,6 +48,23 @@ exports.getPrograms = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 }
+
+exports.getProgramById = async (req, res) => {
+  try {
+    const program = await Program.findOne({
+      _id: req.params.programId,
+      user: req.user.userId,
+    }).populate("days");
+
+    if (!program) {
+      return res.status(404).json({ message: "Program not found" });
+    }
+
+    res.json(program);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
 
 exports.addDayToProgram = async (req, res) => {
     try {

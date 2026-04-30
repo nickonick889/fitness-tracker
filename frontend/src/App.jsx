@@ -8,7 +8,6 @@ import SignupForm from "./components/SignUpForm";
 
 import HomePage from "./pages/HomePage";
 import WorkoutPage from "./pages/WorkoutPage";
-import BuildProgramPage from "./pages/BuildProgramPage";
 import ProgramPage from "./pages/ProgramPage";
 import SessionPage from "./pages/SessionPage";
 import Calendar from "./pages/CalendarPage";
@@ -21,66 +20,21 @@ const App = () => {
   return (
     <>
       <Navbar />
+      <Routes>
+        {/* Public */}
+        <Route path="/login" element={<LoginForm />} />
+        <Route path="/users/new" element={<SignupForm />} />
 
-      <main className="app-main">
-        <Routes>
-          {/* Public */}
-          <Route path="/login" element={<LoginForm />} />
-          <Route path="/users/new" element={<SignupForm />} />
+        {/* App pages (Protected Routes) */}
+        <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+        <Route path="/workouts" element={<ProtectedRoute><WorkoutPage /></ProtectedRoute>} />
+        <Route path="/programs/:programId" element={<ProtectedRoute><ProgramPage /></ProtectedRoute>} />
+        <Route path="/session" element={<ProtectedRoute><SessionPage /></ProtectedRoute>} />
+        <Route path="/calendar" element={<ProtectedRoute><Calendar /></ProtectedRoute>} />
 
-          {/* App pages (Protected Routes) */}
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <HomePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/workouts"
-            element={
-              <ProtectedRoute>
-                <WorkoutPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/workouts/new"
-            element={
-              <ProtectedRoute>
-                <BuildProgramPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/programs/:programId"
-            element={
-              <ProtectedRoute>
-                <ProgramPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/session"
-            element={
-              <ProtectedRoute>
-                <SessionPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/calendar"
-            element={
-              <ProtectedRoute>
-                <Calendar />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route path="*" element={<h1>404 Not Found</h1>} />
-        </Routes>
-      </main>
+        
+        <Route path="*" element={<h1>404 Not Found</h1>} />
+      </Routes>
     </>
   );
 };
