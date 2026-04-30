@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -9,19 +9,84 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
-import { listPrograms } from "../services/workoutProgramStorage";
-
-const countExercises = (program) =>
-  program.days.reduce((total, day) => total + day.exercises.length, 0);
 
 export default function WorkoutPage() {
   const navigate = useNavigate();
-  const programs = useMemo(() => listPrograms(), []);
+  const [programs, setPrograms] = useState([]);
+  const BASE_URL = "http://localhost:3000";
+
+  // Load programs for user
+  useEffect(() => {
+    const fetchPrograms = async () => {
+      const token = localStorage.getItem("token");
+
+      const res = await fetch(`${BASE_URL}/api/programs`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+      setPrograms(data);
+    };
+
+    fetchPrograms();
+  }, []);
+
+  // Create new program → backend generates + returns program
+  const handleCreateProgram = async () => {
+    const token = localStorage.getItem("token");
+
+    const res = await fetch(`${BASE_URL}/api/programs/new`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) {
+      console.error("Failed to create program");
+      return;
+    }
+
+    const text = await res.text(); // safer first
+    const newProgram = text ? JSON.parse(text) : null;
+
+    if (!newProgram) {
+      console.error("No program returned from backend");
+      return;
+    }
+
+    setPrograms((prev) => [newProgram, ...prev]);
+  };
+
+  const handleDeleteProgram = async (programId) => {
+    const token = localStorage.getItem("token");
+
+    const res = await fetch(`${BASE_URL}/api/programs/${programId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error("Failed to delete program: ", errorText);
+      return;
+    }
+
+    // Remove the deleted program from the state
+    setPrograms(programs.filter((p) => p._id !== programId));
+  };
 
   return (
     <Container maxWidth="lg" sx={{ py: 5 }}>
       <Stack spacing={3}>
+        {/* HEADER */}
         <Stack
           direction={{ xs: "column", sm: "row" }}
           justifyContent="space-between"
@@ -36,15 +101,12 @@ export default function WorkoutPage() {
               Your Workout Programs
             </Typography>
             <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.7)" }}>
-              Choose a program card to view and edit it.
+              Click a program to edit it.
             </Typography>
           </Box>
-
-          <Button variant="contained" onClick={() => navigate("/workouts/new")}>
-            Build Your Workout Program
-          </Button>
         </Stack>
 
+        {/* GRID */}
         <Box
           sx={{
             display: "grid",
@@ -56,113 +118,117 @@ export default function WorkoutPage() {
             gap: 2,
           }}
         >
-          {programs.map((program) => (
-            <Card
-              key={program.id}
-              sx={{
-                border: "1px solid rgba(234,255,0,0.14)",
-                background: "linear-gradient(180deg, #111 0%, #0b0b0b 100%)",
-              }}
-            >
-              <CardActionArea
-                onClick={() => navigate(`/programs/${program.id}`)}
+          {/* CREATE NEW PROGRAM CARD */}
+          <Card
+            sx={{
+              cursor: "pointer",
+              border: "2px dashed rgba(234,255,0,0.25)",
+              background: "rgba(255,255,255,0.02)",
+              minHeight: 140,
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+              "&:hover": {
+                background: "rgba(234,255,0,0.05)",
+              },
+            }}
+          >
+            <CardActionArea onClick={handleCreateProgram} sx={{ height: "100%" }}>
+              <CardContent
+                sx={{
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: 1,
+                }}
               >
-                <CardContent sx={{ minHeight: 168 }}>
-                  <Stack spacing={1.25}>
-                    <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                      {program.name}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      sx={{ color: "rgba(255,255,255,0.72)" }}
-                    >
-                      {program.days.length} day
-                      {program.days.length === 1 ? "" : "s"}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      sx={{ color: "rgba(255,255,255,0.72)" }}
-                    >
-                      {countExercises(program)} exercise
-                      {countExercises(program) === 1 ? "" : "s"}
-                    </Typography>
-                  </Stack>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          ))}
+                <Typography variant="h3" sx={{ lineHeight: 1 }}>
+                  +
+                </Typography>
+                <Typography sx={{ fontWeight: 700 }}>
+                  Add New Program
+                </Typography>
+              </CardContent>
+            </CardActionArea>
+          </Card>
 
-          {programs.length === 0 && (
-            <Card
-              sx={{
-                border: "2px dashed rgba(255,255,255,0.2)",
-                background: "rgba(255,255,255,0.02)",
-                minHeight: 200,
-              }}
-            >
-              <CardActionArea
-                onClick={() => navigate("/workouts/new")}
-                sx={{ height: "100%" }}
-              >
-                <CardContent
-                  sx={{
-                    height: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    gap: 1,
-                  }}
-                >
-                  <Typography variant="h3" sx={{ lineHeight: 1 }}>
-                    +
-                  </Typography>
-                  <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                    Add New Workout
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    sx={{ color: "rgba(255,255,255,0.72)" }}
-                  >
-                    Create your first workout program.
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          )}
+          {/* PROGRAM CARD */}
+        {programs.map((program) => (
+          <Card
+            key={program._id}
+            sx={{
+              position: "relative",
+              cursor: "pointer",
+              border: "1px solid rgba(234,255,0,0.2)",
+              background: "rgba(255,255,255,0.03)",
+              minHeight: 140,
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+              "&:hover": {
+                background: "rgba(234,255,0,0.05)",
+              },
 
-          {programs.length > 0 && (
-            <Card
+              // show delete button on hover
+              "&:hover .delete-btn": {
+                opacity: 1,
+                transform: "scale(1)",
+              },
+            }}
+          >
+            {/* DELETE BUTTON */}
+            <IconButton
+              className="delete-btn"
+              size="small"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDeleteProgram(program._id);
+              }}
               sx={{
-                border: "2px dashed rgba(255,255,255,0.2)",
-                background: "rgba(255,255,255,0.02)",
-                minHeight: 168,
+                position: "absolute",
+                top: 6,
+                right: 6,
+                zIndex: 10, // IMPORTANT
+                color: "#fff",
+                backgroundColor: "rgba(0,0,0,0.4)",
+                opacity: 0,
+                transform: "scale(0.8)",
+                transition: "all 0.15s ease-in-out",
+                "&:hover": {
+                  backgroundColor: "rgba(255,0,0,0.2)",
+                  color: "red",
+                },
               }}
             >
-              <CardActionArea
-                onClick={() => navigate("/workouts/new")}
-                sx={{ height: "100%" }}
+              <DeleteIcon fontSize="small" />
+            </IconButton>
+
+            {/* CLICKABLE AREA (NO OVERLAY ISSUES) */}
+            <CardActionArea
+              onClick={() => navigate(`/programs/${program._id}`)}
+              sx={{
+                height: "100%",
+                position: "relative",
+                zIndex: 1,
+              }}
+            >
+              <CardContent
+                sx={{
+                  height: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
               >
-                <CardContent
-                  sx={{
-                    height: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    gap: 1,
-                  }}
-                >
-                  <Typography variant="h4" sx={{ lineHeight: 1 }}>
-                    +
-                  </Typography>
-                  <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                    Build New Program
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          )}
+                <Typography sx={{ fontWeight: 700, color: "#eaff00" }}>
+                  {program.name}
+                </Typography>
+              </CardContent>
+            </CardActionArea>
+          </Card>
+        ))}
         </Box>
       </Stack>
     </Container>

@@ -1,4 +1,5 @@
 const Program = require("../models/Program");
+const Day = require("../models/Day");
 
 exports.addProgram = async (req, res) => {
     try {
@@ -13,6 +14,17 @@ exports.addProgram = async (req, res) => {
         });
 
         res.status(200).json(newProgram);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
+exports.getPrograms = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const programs = await Program.find({ user: userId });
+
+        res.status(200).json(programs);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -40,20 +52,32 @@ exports.addDayToProgram = async (req, res) => {
     }
 }
 
-exports.deleteProgram = async (req, res) => { 
-    try {
-        const { programId } = req.params;
-        const program = await Program.findById(programId);
+exports.deleteProgram = async (req, res) => {
+  try {
+    const { programId } = req.params;
 
-        if (!program) {
-            return res.status(404).json({error: "Program not found"});
-        }
+    // 1. Find program + ensure ownership
+    const program = await Program.findOne({
+      _id: programId,
+      user: req.user.userId,
+    });
 
-        await Day.deleteMany({program: programId});
-        await Program.findByIdAndDelete(programId);
-
-        res.status(200).json({message: "Program deleted successfully"});
-    } catch (err) {
-        res.status(500).json({error: err.message});
+    if (!program) {
+      return res.status(404).json({ message: "Program not found" });
     }
-}
+
+    // 2. Delete related days
+    await Day.deleteMany({ program: programId });
+
+    // 3. Delete program
+    await Program.findByIdAndDelete(programId);
+
+    return res.status(200).json({
+      message: "Program deleted successfully",
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: err.message,
+    });
+  }
+};

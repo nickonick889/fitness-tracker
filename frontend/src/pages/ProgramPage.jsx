@@ -25,6 +25,22 @@ export default function ProgramPage() {
   const [statusMessage, setStatusMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
+  const handleCreateProgram = async () => {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch("/api/programs", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const newProgram = await res.json();
+
+  navigate(`/programs/${newProgram._id}`);
+};
+
   useEffect(() => {
     const fetchProgram = async () => {
       try {
