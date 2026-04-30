@@ -17,13 +17,9 @@ import Typography from "@mui/material/Typography";
 const App = () => {
   const { user, setUser } = useContext(UserContext); //it's not used, not sure if you guys will use it later
 
-
   return (
     <>
-      
       <Navbar />
-
-      
       <Routes>
         {/* Public */}
         <Route path="/login" element={<LoginForm />} />

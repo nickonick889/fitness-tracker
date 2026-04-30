@@ -6,4 +6,43 @@ body {
 
 html {
   overflow-y: scroll;
+  height: 100%;
+}
+
+body, #root {
+  min-height: 100vh;
+}
+
+html, body, #root, .app, .calendar-wrapper {
+  height: 100%;
+  margin: 0;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+}
+
+#root > *:last-child {
+  flex: 1;
+  min-height: 0;
+}
+
+.app-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.calendar-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.calendar-wrapper .fc {
+  flex: 1;
+  min-height: 0;
 }
