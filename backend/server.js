@@ -48,7 +48,7 @@ app.use("/api/exercises", exerciseRoutes);
 app.use("/api/day", dayRoutes);
 app.use("/api/template", programTemplateRoutes);
 app.use("/api/session", sessionRoutes);
-app.use("/api/program", programRoutes);
+app.use("/api/programs", programRoutes);
 
 // 404 HANDLER (ROUTE ERROR HANDLER)
 app.use((req, res) => {
