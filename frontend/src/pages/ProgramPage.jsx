@@ -11,6 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
+import { startSession } from "../services/sessionService";
 
 const createExercise = () => ({ name: "", sets: "", reps: "" });
 //const createDay = () => ({ exercises: [createExercise()] });
@@ -283,6 +284,25 @@ export default function ProgramPage() {
                       Remove Day
                     </Button>
                   </Stack>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    sx={{ alignSelf: "flex-start" }}
+                    onClick={async () => {
+                      try {
+                        const session = await startSession({
+                          programId: program._id,
+                          dayId: day._id,
+                        });
+
+                        navigate(`/session/${session._id}`);
+                      } catch (err) {
+                        console.error(err.message);
+                      }
+                    }}
+                  >
+                    Start Workout
+                  </Button>
 
                   {day.exercises.map((exercise, exerciseIndex) => (
                     <Stack
