@@ -8,7 +8,6 @@ import SignupForm from "./components/SignUpForm";
 
 import HomePage from "./pages/HomePage";
 import WorkoutPage from "./pages/WorkoutPage";
-import BuildProgramPage from "./pages/BuildProgramPage";
 import ProgramPage from "./pages/ProgramPage";
 import SessionPage from "./pages/SessionPage";
 import Calendar from "./pages/CalendarPage";
@@ -33,7 +32,6 @@ const App = () => {
         {/* App pages (Protected Routes) */}
         <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
         <Route path="/workouts" element={<ProtectedRoute><WorkoutPage /></ProtectedRoute>} />
-        <Route path="/workouts/new" element={<ProtectedRoute><BuildProgramPage /></ProtectedRoute>} />
         <Route path="/programs/:programId" element={<ProtectedRoute><ProgramPage /></ProtectedRoute>} />
         <Route path="/session" element={<ProtectedRoute><SessionPage /></ProtectedRoute>} />
         <Route path="/calendar" element={<ProtectedRoute><Calendar /></ProtectedRoute>} />
