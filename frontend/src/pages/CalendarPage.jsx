@@ -1,7 +1,7 @@
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid"; // a plugin!
 import { useEffect, useRef, useState } from "react";
-import { getSessions } from "../services/sessionService";
+
 
 export default function Calendar() {
   const calendarRef = useRef(null);

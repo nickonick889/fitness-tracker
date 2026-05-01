@@ -3,10 +3,13 @@ import { request } from "./apiService";
 const startSession = (data) =>
   request("/api/session/start", "POST", data);
 
-const endSession = (data) =>
-  request("/api/session/end", "POST", data);
+const getSession = (sessionId) =>
+  request(`/api/session/${sessionId}`);
 
-const getSessions = () =>
-  request("/api/session")
+const updateSession = (sessionId, exercises) =>
+  request(`/api/session/${sessionId}`, "PUT", { exercises });
 
-export { startSession, endSession, getSessions };
+const endSession = (sessionId) =>
+  request(`/api/session/${sessionId}/end`, "PUT");
+
+export { startSession, getSession, updateSession, endSession };

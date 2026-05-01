@@ -12,6 +12,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Autocomplete from "@mui/material/Autocomplete";
 import { useNavigate, useParams } from "react-router-dom";
+import { startSession } from "../services/sessionService";
 
 export default function DayPage() {
   const { programId, dayId } = useParams();
@@ -388,9 +389,31 @@ export default function DayPage() {
             Add Exercise
           </Button>
 
+          <Stack direction="row" spacing={2} justifyContent="flex-end" sx={{ mt: 2 }}>
+            {/* Existing Save Button */}
           <Button variant="contained" onClick={handleSave}>
             Save
           </Button>
+          
+          {/* 🔥 Start Workout Button */}
+          <Button
+            variant="outlined"
+            onClick={async () => {
+              try {
+                const session = await startSession({
+                  programId: day.program,
+                  dayId: day._id,
+                });
+
+                navigate(`/session/${session._id}`);
+              } catch (err) {
+                console.error(err.message);
+              }
+            }}
+          >
+            Start Workout
+          </Button>
+        </Stack>
 
           {saveStatus && (
             <Typography
