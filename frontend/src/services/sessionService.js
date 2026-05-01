@@ -15,4 +15,7 @@ const updateSession = (sessionId, exercises) =>
 const endSession = (sessionId) =>
   request(`/api/session/${sessionId}/end`, "PUT");
 
-export { getSessions, startSession, getSession, updateSession, endSession };
+const deleteSession = (id) =>
+  request(`/api/session/${id}`, "DELETE");
+
+export { getSessions, startSession, getSession, updateSession, endSession, deleteSession };

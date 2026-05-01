@@ -32,6 +32,8 @@ export default function SessionPage() {
     fetchSession();
   }, [sessionId]);
 
+  const isCompleted = session?.status === "completed";
+
   const updateSet = (exerciseIndex, setIndex, field, value) => {
     const updated = { ...session };
     updated.exercises[exerciseIndex].sets[setIndex][field] = value;
@@ -69,8 +71,9 @@ export default function SessionPage() {
                       type="number"
                       value={set.weight}
                       onChange={(e) =>
-                        updateSet(i, j, "weight", e.target.value)
+                        updateSet(i, j, "weight", e.target.value) 
                       }
+                      disabled={isCompleted}
                     />
 
                     <TextField
@@ -80,6 +83,7 @@ export default function SessionPage() {
                       onChange={(e) =>
                         updateSet(i, j, "reps", e.target.value)
                       }
+                      disabled={isCompleted}
                     />
                   </Stack>
                 ))}
@@ -90,8 +94,8 @@ export default function SessionPage() {
 
         <Divider />
 
-        <Button variant="contained" size="large" onClick={handleFinish}>
-          Finish Workout
+        <Button variant="contained" size="large" onClick={handleFinish} disabled={isCompleted}>
+          {isCompleted ? "Completed" : "Finish Workout"}
         </Button>
       </Stack>
     </Container>
