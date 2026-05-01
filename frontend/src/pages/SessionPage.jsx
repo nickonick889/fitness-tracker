@@ -20,12 +20,20 @@ export default function SessionPage() {
   const [session, setSession] = useState(null);
 
   useEffect(() => {
-    if (sessionId) {
-      localStorage.setItem("activeSessionId", sessionId);
-    }
     const fetchSession = async () => {
-      const data = await getSession(sessionId);
-      setSession(data);
+      try {
+        const data = await getSession(sessionId);
+        setSession(data);
+
+        if (data.status === "in_progress") {
+          localStorage.setItem("activeSessionId", sessionId);
+        } else {
+          localStorage.removeItem("activeSessionId");
+        }
+
+      } catch (err) {
+        console.error(err.message);
+      }
     };
 
     fetchSession();
