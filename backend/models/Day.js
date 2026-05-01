@@ -1,26 +1,7 @@
-//@ts-check
 
 const mongoose = require("mongoose");
 
 const { Schema, model } = mongoose;
-
-// const setSchema = new mongoose.Schema({
-//   weight: Number,
-//   reps: Number,
-// });
-
-// const dayExerciseSchema = new mongoose.Schema({
-//   exerciseId: {
-//     type: mongoose.Schema.Types.ObjectId,
-//     ref: "ExerciseLibrary",
-//     required: true,
-//   },
-//   name: {
-//     type: String,
-//     required: true,
-//   },
-//   sets: [setSchema],
-// });
 
 const daySchema = new Schema({
   program: {
@@ -67,3 +48,26 @@ const daySchema = new Schema({
 const Day = model('Day', daySchema)
 
 module.exports = Day
+
+
+
+
+// GRAVEYARD CODE
+
+// const setSchema = new mongoose.Schema({
+//   weight: Number,
+//   reps: Number,
+// });
+
+// const dayExerciseSchema = new mongoose.Schema({
+//   exerciseId: {
+//     type: mongoose.Schema.Types.ObjectId,
+//     ref: "ExerciseLibrary",
+//     required: true,
+//   },
+//   name: {
+//     type: String,
+//     required: true,
+//   },
+//   sets: [setSchema],
+// });
