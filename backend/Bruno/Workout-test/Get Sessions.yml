@@ -1,0 +1,18 @@
+info:
+  name: Get Sessions
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: http://localhost:3000/api/session
+  headers:
+    - name: Authorization
+      value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OWYzNmU5OWViYmJkNWE3OTMxMDFkZjUiLCJpYXQiOjE3Nzc2MzI2MDYsImV4cCI6MTc3NzYzNjIwNn0.cWIgEgtm0vcSowwjgqYavYfh-dUSwa2QbTEZIFmh25U
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

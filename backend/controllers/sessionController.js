@@ -90,3 +90,14 @@ exports.endSession = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+exports.getSessions = async (req, res) => {
+  try {
+    const sessions = await Session.find({ user: req.user.userId })
+      .sort({ startTime: -1 });
+
+    res.json(sessions);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

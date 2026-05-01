@@ -400,6 +400,10 @@ export default function DayPage() {
             variant="outlined"
             onClick={async () => {
               try {
+                console.log("Starting session with:", {
+                programId: day.program,
+                dayId: day._id,
+});
                 const session = await startSession({
                   programId: day.program,
                   dayId: day._id,

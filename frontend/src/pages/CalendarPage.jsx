@@ -25,7 +25,7 @@ export default function Calendar() {
   useEffect(() => {
     async function fetchSessions() {
       try {
-        const sessions = await getSessions();
+        const sessions = await getSession();
 
         const calendarEvents = (sessions || []).map((session) => {
           const title =
