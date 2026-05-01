@@ -9,4 +9,7 @@ const deleteProgram = (programId) =>
 const addDay = (programId, data) =>
   request(`/api/day/${programId}`, "POST", data);
 
-export { createProgram, deleteProgram, addDay };
+const getPrograms = () =>
+  request(`/api/programs`, "GET");
+
+export { createProgram, deleteProgram, addDay, getPrograms };
