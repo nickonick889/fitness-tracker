@@ -13,10 +13,6 @@ import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate, useParams } from "react-router-dom";
-import { startSession } from "../services/sessionService";
-
-const createExercise = () => ({ name: "", sets: "", reps: "" });
-//const createDay = () => ({ exercises: [createExercise()] });
 
 export default function ProgramPage() {
   const { programId } = useParams();
@@ -297,123 +293,41 @@ export default function ProgramPage() {
                   handleDeleteDay(day._id);
                 }}
                 sx={{
-                  p: 2,
-                  borderRadius: 2,
-                  border: "1px solid rgba(255,255,255,0.14)",
-                  background: "rgba(255,255,255,0.02)",
+                  position: "absolute",
+                  top: 6,
+                  right: 6,
+                  zIndex: 10,
+                  opacity: 0,
+                  transform: "scale(0.8)",
+                  transition: "0.2s",
+                  color: "white",
+                  backgroundColor: "rgba(0,0,0,0.4)",
+                  "&:hover": {
+                    backgroundColor: "rgba(255,0,0,0.2)",
+                    color: "red",
+                  },
                 }}
               >
-                <Stack spacing={2}>
-                  <Stack
-                    direction="row"
-                    alignItems="center"
-                    justifyContent="space-between"
-                  >
-                    <Typography variant="h6">Day {dayIndex + 1}</Typography>
-                    <Button
-                      variant="text"
-                      color="warning"
-                      onClick={() => removeDay(dayIndex)}
-                      disabled={program.days.length === 1}
-                    >
-                      Remove Day
-                    </Button>
-                  </Stack>
+                <DeleteIcon fontSize="small" />
+              </IconButton>
 
-                  {day.exercises.map((exercise, exerciseIndex) => (
-                    <Stack
-                      key={`program-day-${dayIndex}-exercise-${exerciseIndex}`}
-                      direction={{ xs: "column", md: "row" }}
-                      spacing={1.5}
-                    >
-                      <TextField
-                        label={`Exercise ${exerciseIndex + 1}`}
-                        value={exercise.name}
-                        onChange={(event) =>
-                          updateExercise(
-                            dayIndex,
-                            exerciseIndex,
-                            "name",
-                            event.target.value,
-                          )
-                        }
-                        fullWidth
-                        required
-                      />
-                      <TextField
-                        label="Sets"
-                        type="number"
-                        value={exercise.sets}
-                        onChange={(event) =>
-                          updateExercise(
-                            dayIndex,
-                            exerciseIndex,
-                            "sets",
-                            event.target.value,
-                          )
-                        }
-                        slotProps={{ htmlInput: { min: 1 } }}
-                        sx={{ minWidth: { xs: "100%", md: 110 } }}
-                        required
-                      />
-                      <TextField
-                        label="Reps"
-                        type="number"
-                        value={exercise.reps}
-                        onChange={(event) =>
-                          updateExercise(
-                            dayIndex,
-                            exerciseIndex,
-                            "reps",
-                            event.target.value,
-                          )
-                        }
-                        slotProps={{ htmlInput: { min: 1 } }}
-                        sx={{ minWidth: { xs: "100%", md: 110 } }}
-                        required
-                      />
-                      <Button
-                        variant="text"
-                        color="warning"
-                        onClick={() => removeExercise(dayIndex, exerciseIndex)}
-                        disabled={day.exercises.length === 1}
-                      >
-                        Remove
-                      </Button>
-                    </Stack>
-                  ))}
-
-                  <Button
-                    variant="outlined"
-                    onClick={() => addExercise(dayIndex)}
-                  >
-                    Add Exercise
-                  </Button>
-                </Stack>
-              </Box>
-            ))}
-
-            <Button variant="outlined" onClick={handleAddDay}>
-              Add Day
-            </Button>
-
-            {errorMessage && <Alert severity="warning">{errorMessage}</Alert>}
-            {statusMessage && <Alert severity="success">{statusMessage}</Alert>}
-
-            <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5}>
-              <Button variant="text" onClick={() => navigate("/workouts")}>
-                Back to Workouts
-              </Button>
-              <Button variant="outlined" color="error" onClick={handleDelete}>
-                Delete Program
-              </Button>
-              <Button type="submit" variant="contained" size="large">
-                Save Changes
-              </Button>
-            </Stack>
-          </Stack>
-        </CardContent>
-      </Card>
+              {/* CLICKABLE AREA */}
+              <CardActionArea
+                onClick={() =>
+                  navigate(`/programs/${programId}/days/${day._id}`)
+                }
+                sx={{ height: "100%", width: "100%" }}
+              >
+                <CardContent sx={{ textAlign: "center" }}>
+                  <Typography sx={{ fontWeight: 700 }}>
+                    {day.name}
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          ))}
+        </Box>
+      </Stack>
     </Container>
   );
 }
