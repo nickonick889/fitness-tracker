@@ -4,33 +4,38 @@ const mongoose = require("mongoose");
 
 const { Schema, model } = mongoose;
 
-const programSchema = new Schema({
+// const setSchema = new mongoose.Schema({
+//   weight: Number,
+//   reps: Number,
+// });
+
+// const exerciseSchema = new mongoose.Schema({
+//   exerciseId: {
+//     type: mongoose.Schema.Types.ObjectId,
+//     ref: "ExerciseLibrary",
+//   },
+//   name: String,
+//   sets: [setSchema],
+// });
+
+// const daySchema = new mongoose.Schema({
+//   name: String,
+//   exercises: [exerciseSchema],
+// });
+
+const programSchema = new mongoose.Schema({
+  name: String,
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
   },
-  template: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "ProgramTemplate",
-  },
   days: [
     {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Day"
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Day"
     }
   ],
-  name: {
-    type: String,
-    required: true,
-  },
-  description: {
-    type: String,
-  },
- createdAt: {
-    type: Date,
-    default: Date.now,
-  },
 });
 
 const Program = model('Program', programSchema)

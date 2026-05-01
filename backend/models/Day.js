@@ -4,23 +4,23 @@ const mongoose = require("mongoose");
 
 const { Schema, model } = mongoose;
 
-const setSchema = new mongoose.Schema({
-  weight: Number,
-  reps: Number,
-});
+// const setSchema = new mongoose.Schema({
+//   weight: Number,
+//   reps: Number,
+// });
 
-const dayExerciseSchema = new mongoose.Schema({
-  exerciseId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "ExerciseLibrary",
-    required: true,
-  },
-  name: {
-    type: String,
-    required: true,
-  },
-  sets: [setSchema],
-});
+// const dayExerciseSchema = new mongoose.Schema({
+//   exerciseId: {
+//     type: mongoose.Schema.Types.ObjectId,
+//     ref: "ExerciseLibrary",
+//     required: true,
+//   },
+//   name: {
+//     type: String,
+//     required: true,
+//   },
+//   sets: [setSchema],
+// });
 
 const daySchema = new Schema({
   program: {
@@ -28,7 +28,21 @@ const daySchema = new Schema({
     ref: "Program",
     required: true,
   },
-  exercises: [dayExerciseSchema],
+  exercises: [
+    {
+      exerciseId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "ExerciseLibrary"
+      },
+      name: String,
+      sets: [
+        {
+          weight: Number,
+          reps: Number
+        }
+      ]
+    }
+  ],
   name: {
     type: String,
     required: true,

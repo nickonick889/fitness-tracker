@@ -8,6 +8,9 @@ import {
   Container,
   Stack,
   Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -16,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 export default function WorkoutPage() {
   const navigate = useNavigate();
   const [programs, setPrograms] = useState([]);
+  const [openCreateModal, setOpenCreateModal] = useState(false);
   const BASE_URL = "http://localhost:3000";
 
   // Load programs for user
@@ -30,7 +34,8 @@ export default function WorkoutPage() {
       });
 
       const data = await res.json();
-      setPrograms(data);
+      console.log("PROGRAM DAYS:", data.days);
+      setPrograms(Array.isArray(data) ? data : []);
     };
 
     fetchPrograms();
@@ -125,28 +130,25 @@ export default function WorkoutPage() {
               border: "2px dashed rgba(234,255,0,0.25)",
               background: "rgba(255,255,255,0.02)",
               minHeight: 140,
-              height: "100%",
-              display: "flex",
-              flexDirection: "column",
               "&:hover": {
                 background: "rgba(234,255,0,0.05)",
               },
             }}
           >
-            <CardActionArea onClick={handleCreateProgram} sx={{ height: "100%" }}>
-              <CardContent
-                sx={{
-                  height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  gap: 1,
-                }}
-              >
-                <Typography variant="h3" sx={{ lineHeight: 1 }}>
-                  +
-                </Typography>
+            <CardActionArea
+              onClick={() => {
+                console.log("open modal clicked");
+                setOpenCreateModal(true);
+              }}
+              sx={{
+                height: 140,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <CardContent sx={{ textAlign: "center" }}>
+                <Typography variant="h3">+</Typography>
                 <Typography sx={{ fontWeight: 700 }}>
                   Add New Program
                 </Typography>
@@ -231,6 +233,36 @@ export default function WorkoutPage() {
         ))}
         </Box>
       </Stack>
+
+      <Dialog open={openCreateModal} onClose={() => setOpenCreateModal(false)}>
+        <DialogTitle>Create Program</DialogTitle>
+
+        <DialogContent>
+          <Stack spacing={2} sx={{ mt: 1, minWidth: 250 }}>
+
+            <Button
+              variant="contained"
+              onClick={async () => {
+                await handleCreateProgram(); // your existing function
+                setOpenCreateModal(false);
+              }}
+            >
+              Custom
+            </Button>
+
+            <Button
+              variant="outlined"
+              onClick={() => {
+                setOpenCreateModal(false);
+                navigate("/templates"); // or template picker page
+              }}
+            >
+              Template
+            </Button>
+
+          </Stack>
+        </DialogContent>
+      </Dialog>
     </Container>
   );
 }

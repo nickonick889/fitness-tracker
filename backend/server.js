@@ -46,13 +46,18 @@ app.use("/api/users", userRoutes);
 app.use("/api/login", loginRoutes);
 app.use("/api/exercises", exerciseRoutes);
 app.use("/api/days", dayRoutes);
-app.use("/api/template", programTemplateRoutes);
+app.use("/api/templates", programTemplateRoutes);
 app.use("/api/session", sessionRoutes);
 app.use("/api/programs", programRoutes);
 
 // 404 HANDLER (ROUTE ERROR HANDLER)
 app.use((req, res) => {
   res.status(404).json({ error: "Route not found" });
+});
+
+app.use((req, res, next) => {
+  res.set("Cache-Control", "no-store");
+  next();
 });
 
 // ERROR HANDLER (Shows Error message)

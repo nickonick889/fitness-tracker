@@ -1,6 +1,7 @@
 const ProgramTemplate = require("../models/ProgramTemplate");
 const ExerciseLibrary = require("../models/ExerciseLibrary");
 const express = require("express");
+const mongoose = require("mongoose");
 
 exports.createTemplate = async (req, res) => {
     try {
@@ -12,6 +13,17 @@ exports.createTemplate = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 }
+
+exports.getTemplates = async (req, res) => {
+  try {
+
+    const templates = await ProgramTemplate.find();
+    res.json(templates);
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 
 exports.seedTemplate = async (req, res) => {
   try {
@@ -28,32 +40,44 @@ exports.seedTemplate = async (req, res) => {
       name: "Push Pull Legs",
       days: [
         {
+          _id: new mongoose.Types.ObjectId(),
           name: "Push",
           exercises: [
             {
-              exercise: chest._id,
-              targetSets: 4,
-              targetReps: 8
+              exerciseId: chest._id,
+              sets: [
+                { weight: 100, reps: 8 },
+                { weight: 100, reps: 8 },
+                { weight: 100, reps: 8 },
+              ]
             }
           ]
         },
         {
+          _id: new mongoose.Types.ObjectId(),
           name: "Pull",
           exercises: [
             {
-              exercise: back._id,
-              targetSets: 4,
-              targetReps: 10
+              exerciseId: back._id,
+              sets: [
+                { weight: 100, reps: 10 },
+                { weight: 100, reps: 10 },
+                { weight: 100, reps: 10 },
+              ]
             }
           ]
         },
         {
+          _id: new mongoose.Types.ObjectId(),
           name: "Legs",
           exercises: [
             {
-              exercise: legs._id,
-              targetSets: 3,
-              targetReps: 5
+              exerciseId: legs._id,
+              sets: [
+                { weight: 100, reps: 10 },
+                { weight: 100, reps: 10 },
+                { weight: 100, reps: 10 },
+              ]
             }
           ]
         }
@@ -84,72 +108,100 @@ exports.seedTemplate2 = async (req, res) => {
       name: "7 days Push Pull Legs",
       days: [
         {
+          _id: new mongoose.Types.ObjectId(),
           name: "Push day 1",
           exercises: [
             {
-              exercise: chest._id,
-              targetSets: 4,
-              targetReps: 8
+              exerciseId: chest._id,
+              sets: [
+                { weight: 100, reps: 8 },
+                { weight: 100, reps: 8 },
+                { weight: 100, reps: 8 },
+              ]
             }
           ]
         },
         {
+          _id: new mongoose.Types.ObjectId(),
           name: "Pull day 2",
           exercises: [
             {
-              exercise: back._id,
-              targetSets: 4,
-              targetReps: 10
+              exerciseId: back._id,
+              sets: [
+                { weight: 100, reps: 10 },
+                { weight: 100, reps: 10 },
+                { weight: 100, reps: 10 },
+              ]
             }
           ]
         },
         {
+          _id: new mongoose.Types.ObjectId(),
           name: "Legs day 3",
           exercises: [
             {
-              exercise: legs._id,
-              targetSets: 3,
-              targetReps: 5
+              exerciseId: legs._id,
+              sets: [
+                { weight: 100, reps: 5 },
+                { weight: 100, reps: 5 },
+                { weight: 100, reps: 5 },
+              ]
             }
           ]
         },
         {
+          _id: new mongoose.Types.ObjectId(),
           name: "Shoulders day 4",
           exercises: [
             {
-              exercise: shoulders._id,
-              targetSets: 4,
-              targetReps: 8
+              exerciseId: shoulders._id,
+              sets: [
+                { weight: 100, reps: 8 },
+                { weight: 100, reps: 8 },
+                { weight: 100, reps: 8 },
+              ]
             }
           ]
         },
         {
+          _id: new mongoose.Types.ObjectId(),
           name: "Arms day 5",
           exercises: [
             {
-              exercise: arms._id,
-              targetSets: 4,
-              targetReps: 10
+              exerciseId: arms._id,
+              sets: [
+                { weight: 100, reps: 10 },
+                { weight: 100, reps: 10 },
+                { weight: 100, reps: 10 },
+              ]
             }
           ]
         },
         {
+          _id: new mongoose.Types.ObjectId(),
           name: "Push day 6",
           exercises: [
             {
-              exercise: chest._id,
-              targetSets: 4,
-              targetReps: 8
+              exerciseId: chest._id,
+              sets: [
+                { weight: 100, reps: 8 },
+                { weight: 100, reps: 8 },
+                { weight: 100, reps: 8 },
+              ]
             }
           ]
         },
         {
+          _id: new mongoose.Types.ObjectId(),
           name: "Pull day 7",
           exercises: [
             {
-              exercise: back._id,
-              targetSets: 4,
-              targetReps: 10
+              exerciseId: back._id,
+              sets: [
+                { weight: 100, reps: 10 },
+                { weight: 100, reps: 10 },
+                { weight: 100, reps: 10 },
+              ]
             }
           ]
         },

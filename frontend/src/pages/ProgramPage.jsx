@@ -12,6 +12,7 @@ import {
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import TextField from "@mui/material/TextField";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function ProgramPage() {
@@ -22,8 +23,6 @@ export default function ProgramPage() {
   const [program, setProgram] = useState(null);
   const [isEditingName, setIsEditingName] = useState(false);
   const [nameInput, setNameInput] = useState("");
-
-
   
   useEffect(() => {
     const fetchProgram = async () => {
@@ -33,6 +32,8 @@ export default function ProgramPage() {
         const res = await fetch(`${BASE_URL}/api/programs/${programId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
+            "Cache-Control": "no-cache",
+            "Pragma": "no-cache",
           },
         });
 
