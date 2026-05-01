@@ -25,6 +25,67 @@ exports.createNewDay = async (req, res) => {
   }
 };
 
+exports.updateDayName = async (req, res) => {
+  try {
+    const { dayId } = req.params;
+    const { name } = req.body;
+
+    const updated = await Day.findByIdAndUpdate(
+      dayId,
+      { name },
+      { new: true }
+    );
+
+    res.json(updated);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.updateDay = async (req, res) => {
+  try {
+    const { dayId } = req.params;
+
+    console.log("BODY:", req.body);
+    console.log("DAY ID:", req.params.dayId);
+
+    if (!req.body.exercises) {
+      return res.status(400).json({ message: "Exercises missing" });
+    }
+
+    const updated = await Day.findByIdAndUpdate(
+      dayId,
+      { exercises: req.body.exercises },
+      { new: true }
+    );
+
+    if (!updated) {
+      return res.status(404).json({ message: "Day not found" });
+    }
+
+    res.json(updated);
+  } catch (err) {
+    console.error("updateDay error:", err);
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.getDays = async (req, res) => {
+  try {
+    const { dayId } = req.params;
+
+    const day = await Day.findById(dayId);
+
+    if (!day) {
+      return res.status(404).json({ message: "Day not found" });
+    }
+
+    res.json(day);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+}
+
 exports.deleteDay = async (req, res) => {
   try {
     const { dayId } = req.params;
