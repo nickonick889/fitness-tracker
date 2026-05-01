@@ -45,7 +45,7 @@ mongoose.connection.on('error', (err) => {
 app.use("/api/users", userRoutes);
 app.use("/api/login", loginRoutes);
 app.use("/api/exercises", exerciseRoutes);
-app.use("/api/day", dayRoutes);
+app.use("/api/days", dayRoutes);
 app.use("/api/template", programTemplateRoutes);
 app.use("/api/session", sessionRoutes);
 app.use("/api/programs", programRoutes);

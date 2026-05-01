@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
 import {
-  Alert,
   Box,
   Button,
   Card,
+  CardActionArea,
   CardContent,
   Container,
   Stack,
-  TextField,
   Typography,
 } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate, useParams } from "react-router-dom";
 import { startSession } from "../services/sessionService";
 
@@ -19,248 +21,281 @@ const createExercise = () => ({ name: "", sets: "", reps: "" });
 export default function ProgramPage() {
   const { programId } = useParams();
   const navigate = useNavigate();
+  const BASE_URL = "http://localhost:3000";
 
   const [program, setProgram] = useState(null);
-  const [dayName, setDayName] = useState("");
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [nameInput, setNameInput] = useState("");
 
-  const [statusMessage, setStatusMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleCreateProgram = async () => {
-  const token = localStorage.getItem("token");
-
-  const res = await fetch("/api/programs", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  const newProgram = await res.json();
-
-  navigate(`/programs/${newProgram._id}`);
-};
-
+  
   useEffect(() => {
     const fetchProgram = async () => {
       try {
         const token = localStorage.getItem("token");
 
-        const res = await fetch(`/api/programs/${programId}`, {
+        const res = await fetch(`${BASE_URL}/api/programs/${programId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
+        if (!res.ok) {
+          const errText = await res.text();
+          console.error("Failed to fetch program:", errText);
+          return;
+        }
+
         const data = await res.json();
+        console.log("PROGRAM DATA:", data);
+
         setProgram(data);
       } catch (err) {
-        console.error("Failed to load program:", err);
+        console.error("Fetch error:", err);
       }
     };
+
     fetchProgram();
   }, [programId]);
 
-  const updateExercise = (dayIndex, exerciseIndex, field, value) => {
-    setProgram((current) => {
-      const updatedDays = current.days.map((day, index) => {
-        if (index !== dayIndex) return day;
+  useEffect(() => {
+      if (program) {
+        setNameInput(program.name);
+      }
+    }, [program]);
 
-        return {
-          ...day,
-          exercises: day.exercises.map((exercise, exIndex) =>
-            exIndex === exerciseIndex
-              ? { ...exercise, [field]: value }
-              : exercise,
-          ),
-        };
-      });
-
-      return { ...current, days: updatedDays };
-    });
-  };
-
-  const addExercise = (dayIndex) => {
-    setProgram((current) => ({
-      ...current,
-      days: current.days.map((day, index) =>
-        index === dayIndex
-          ? { ...day, exercises: [...day.exercises, createExercise()] }
-          : day,
-      ),
-    }));
-  };
-
-  const removeExercise = (dayIndex, exerciseIndex) => {
-    setProgram((current) => ({
-      ...current,
-      days: current.days.map((day, index) => {
-        if (index !== dayIndex || day.exercises.length === 1) return day;
-
-        return {
-          ...day,
-          exercises: day.exercises.filter(
-            (_, exIndex) => exIndex !== exerciseIndex,
-          ),
-        };
-      }),
-    }));
-  };
-
-  const handleAddDay = async () => {
-    if (!dayName.trim()) return;
-
-    try {
+    const handleRenameProgram = async () => {
       const token = localStorage.getItem("token");
 
-      const res = await fetch(`/api/programs/${programId}/addDay`, {
-        method: "POST",
+      const res = await fetch(`${BASE_URL}/api/programs/${programId}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          name: dayName,
+          name: nameInput,
         }),
       });
 
-      const newDay = await res.json();
+      const text = await res.text(); // 👈 IMPORTANT DEBUG STEP
+      console.log("Rename response:", text);
 
-      setProgram((prev) => ({
-        ...prev,
-        days: [...prev.days, newDay],
-      }));
+      if (!res.ok) {
+        console.error("Failed to rename program");
+        return;
+      }
 
-      setDayName("");
-    } catch (err) {
-      console.error(err);
-    }
-  };
+      const updated = JSON.parse(text);
+      setProgram(updated);
+      setIsEditingName(false);
+    };
 
-  const removeDay = (dayIndex) => {
-    setProgram((current) => {
-      if (current.days.length === 1) return current;
-
-      return {
-        ...current,
-        days: current.days.filter((_, index) => index !== dayIndex),
-      };
-    });
-  };
-
-  const handleDelete = async () => {
+  const handleAddDay = async () => {
     try {
       const token = localStorage.getItem("token");
 
-      await fetch(`/api/programs/${program.id}`, {
+      const res = await fetch(
+        `${BASE_URL}/api/days/${programId}/add`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const text = await res.text();
+      console.log("ADD DAY RESPONSE:", text);
+
+      if (!res.ok) {
+        console.error("Failed to add day");
+        return;
+      }
+
+      const newDay = JSON.parse(text);
+
+      setProgram((prev) => ({
+        ...prev,
+        days: [...(prev.days || []), newDay],
+      }));
+    } catch (err) {
+      console.error("Failed to add day:", err);
+    }
+  };
+
+  const handleDeleteDay = async (dayId) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await fetch(`${BASE_URL}/api/days/${dayId}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      navigate("/workouts");
+      if (!res.ok) {
+        console.error("Failed to delete day");
+        return;
+      }
+
+      setProgram((prev) => ({
+        ...prev,
+        days: prev.days.filter((d) => d._id !== dayId),
+      }));
     } catch (err) {
       console.error(err);
     }
   };
 
-  const handleSave = async (event) => {
-    event.preventDefault();
-
-    if (!program.name.trim()) {
-      setErrorMessage("Program name is required.");
-      setStatusMessage("");
-      return;
-    }
-
-    const token = localStorage.getItem("token");
-
-    const cleanDays = program.days
-      .map((day) => ({
-        exercises: day.exercises
-          .filter((exercise) => exercise.name.trim())
-          .map((exercise) => ({
-            name: exercise.name.trim(),
-            sets: Number(exercise.sets),
-            reps: Number(exercise.reps),
-          })),
-      }))
-      .filter((day) => day.exercises.length > 0);
-
-    if (cleanDays.length === 0) {
-      setErrorMessage("At least one exercise is required.");
-      setStatusMessage("");
-      return;
-    }
-
-    const updated = await fetch(`/api/programs/${program.id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        name: program.name,
-       }),
-    });
-
-    setProgram(updated);
-    setErrorMessage("");
-    setStatusMessage("Program updated.");
-  };
-
   if (!program) {
     return (
-      <Container maxWidth="sm" sx={{ py: 6 }}>
-        <Card>
-          <CardContent>
-            <Stack spacing={2}>
-              <Typography variant="h6">Program not found.</Typography>
-              <Button variant="contained" onClick={() => navigate("/workouts")}>
-                Back to Workouts
-              </Button>
-            </Stack>
-          </CardContent>
-        </Card>
-      </Container>
+      <Box sx={{ p: 4 }}>
+        <Typography>Loading program...</Typography>
+      </Box>
     );
   }
 
   return (
-    <Container maxWidth="md" sx={{ py: 5 }}>
-      <Card
-        sx={{
-          border: "1px solid rgba(234,255,0,0.2)",
-          background: "linear-gradient(180deg, #111 0%, #0b0b0b 100%)",
-        }}
-      >
-        <CardContent sx={{ p: { xs: 2.5, md: 4 } }}>
-          <Stack spacing={3} component="form" onSubmit={handleSave}>
+    <Container maxWidth="lg" sx={{ py: 5 }}>
+      <Stack spacing={3}>
+
+        {/* HEADER */}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            mb: 2,
+            gap: 2,
+          }}
+        >
+          {/* LEFT SIDE */}
+          <Box sx={{ minWidth: 0 }}>
+            {isEditingName ? (
+              <TextField
+                value={nameInput}
+                onChange={(e) => setNameInput(e.target.value)}
+                onBlur={handleRenameProgram}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleRenameProgram();
+                }}
+                autoFocus
+                size="small"
+              />
+            ) : (
+              <Typography
+                variant="h5"
+                sx={{
+                  fontWeight: 800,
+                  cursor: "pointer",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+                onClick={() => setIsEditingName(true)}
+              >
+                {program.name}
+              </Typography>
+            )}
+
             <Typography
-              variant="h5"
-              sx={{ color: "primary.main", fontWeight: 800 }}
+              variant="body2"
+              sx={{ color: "rgba(255,255,255,0.7)", mt: 0.5 }}
             >
-              Program Details
+              Click a day to edit it.
             </Typography>
+          </Box>
 
-            <TextField
-              label="Program Name"
-              value={program.name}
-              onChange={(event) =>
-                setProgram((current) => ({
-                  ...current,
-                  name: event.target.value,
-                }))
-              }
-              fullWidth
-              required
-            />
+          {/* RIGHT SIDE */}
+          <IconButton
+            onClick={() => navigate("/workouts")}
+            sx={{
+              flexShrink: 0,
+              color: "white",
+              backgroundColor: "rgba(255,255,255,0.05)",
+              "&:hover": {
+                backgroundColor: "rgba(234,255,0,0.15)",
+                color: "#eaff00",
+              },
+            }}
+          >
+            <ArrowBackIcon />
+          </IconButton>
+        </Box>
 
-            {program.days.map((day, dayIndex) => (
-              <Box
-                key={`program-day-${dayIndex}`}
+        
+
+        {/* GRID */}
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "1fr",
+              sm: "repeat(2, 1fr)",
+              lg: "repeat(3, 1fr)",
+            },
+            gap: 2,
+          }}
+        >
+
+          {/* ADD DAY CARD */}
+          <Card
+            onClick={handleAddDay}
+            sx={{
+              cursor: "pointer",
+              border: "2px dashed rgba(234,255,0,0.25)",
+              background: "rgba(255,255,255,0.02)",
+              minHeight: 140,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              "&:hover": {
+                background: "rgba(234,255,0,0.05)",
+              },
+            }}
+          >
+            <CardActionArea sx={{ height: "100%" }}>
+              <CardContent sx={{ textAlign: "center" }}>
+                <Typography variant="h3">+</Typography>
+                <Typography sx={{ fontWeight: 700 }}>
+                  Add New Day
+                </Typography>
+              </CardContent>
+            </CardActionArea>
+          </Card>
+
+          {/* DAY CARDS */}
+          {program.days?.map((day) => (
+            <Card
+              key={day._id}
+              sx={{
+                position: "relative",
+                cursor: "pointer",
+                border: "1px solid rgba(234,255,0,0.2)",
+                background: "rgba(255,255,255,0.03)",
+                minHeight: 140,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                "&:hover": {
+                  background: "rgba(234,255,0,0.05)",
+                  "& .delete-btn": {
+                    opacity: 1,
+                    transform: "scale(1)",
+                  },
+                },
+              }}
+            >
+              {/* DELETE BUTTON */}
+              <IconButton
+                className="delete-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteDay(day._id);
+                }}
                 sx={{
                   p: 2,
                   borderRadius: 2,
@@ -284,25 +319,6 @@ export default function ProgramPage() {
                       Remove Day
                     </Button>
                   </Stack>
-                  <Button
-                    variant="contained"
-                    size="small"
-                    sx={{ alignSelf: "flex-start" }}
-                    onClick={async () => {
-                      try {
-                        const session = await startSession({
-                          programId: program._id,
-                          dayId: day._id,
-                        });
-
-                        navigate(`/session/${session._id}`);
-                      } catch (err) {
-                        console.error(err.message);
-                      }
-                    }}
-                  >
-                    Start Workout
-                  </Button>
 
                   {day.exercises.map((exercise, exerciseIndex) => (
                     <Stack
