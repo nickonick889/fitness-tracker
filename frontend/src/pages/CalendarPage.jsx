@@ -1,7 +1,7 @@
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid"; // a plugin!
 import { useEffect, useRef, useState } from "react";
-
+import { getSessions } from "../../../backend/controllers/sessionController";
 
 export default function Calendar() {
   const calendarRef = useRef(null);
@@ -25,7 +25,7 @@ export default function Calendar() {
   useEffect(() => {
     async function fetchSessions() {
       try {
-        const sessions = await getSession();
+        const sessions = await getSessions();
 
         const calendarEvents = (sessions || []).map((session) => {
           const title =
