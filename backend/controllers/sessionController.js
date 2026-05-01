@@ -14,7 +14,7 @@ exports.startSession = async (req, res) => {
 
     // copy exercises from Day
     const exercises = day.exercises.map((ex) => ({
-    // 🔥 FIX: always get a valid name
+
     name: ex.exerciseId?.name || ex.name || "Unknown Exercise",
 
     sets: ex.sets.map((s) => ({
