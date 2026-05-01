@@ -2,23 +2,22 @@ const mongoose = require("mongoose");
 
 const { Schema, model } = mongoose;
 
+const templateSetSchema = new Schema({
+  weight: Number,
+  reps: Number,
+});
+
+
 const templateExerciseSchema = new Schema(
   {
-    exercise: {
+    exerciseId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Exercise", // reference your Exercise model (Are we using the DB to populate or hard coding)
+      ref: "ExerciseLibrary",
       required: true,
     },
-    targetSets: {
-      type: Number,
-      required: true,
-    },
-    targetReps: {
-      type: Number,
-      required: true,
-    }
-  },
-  { _id: false }
+    name: String,
+    sets: [templateSetSchema],
+  }
 );
 
 const templateDaySchema = new Schema(
@@ -28,8 +27,7 @@ const templateDaySchema = new Schema(
       required: true,
     },
     exercises: [templateExerciseSchema]
-  },
-  { _id: false }
+  }
 );
 
 const programTemplateSchema = new Schema(

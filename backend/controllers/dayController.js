@@ -44,10 +44,13 @@ exports.updateDayName = async (req, res) => {
 
 exports.updateDay = async (req, res) => {
   try {
+    console.log("HIT updateDay route");
+    console.log("PARAMS:", req.params);
     const { dayId } = req.params;
 
     console.log("BODY:", req.body);
     console.log("DAY ID:", req.params.dayId);
+    console.log("EXERCISES TYPE:", req.body.exercises);
 
     if (!req.body.exercises) {
       return res.status(400).json({ message: "Exercises missing" });
@@ -55,7 +58,7 @@ exports.updateDay = async (req, res) => {
 
     const updated = await Day.findByIdAndUpdate(
       dayId,
-      { exercises: req.body.exercises },
+      { $set: { exercises: req.body.exercises } },
       { new: true }
     );
 
@@ -119,7 +122,14 @@ exports.addExerciseToDay = async (req, res) => {
 
         const updated = await Day.findByIdAndUpdate(
             dayId,
-            { $addToSet: { exercises: exerciseId } },
+            { $push: {
+              exercises: {
+                exerciseId,
+                name,
+                sets: []
+              }
+            } 
+          },
             { new: true }
         ).populate("exercises");
 

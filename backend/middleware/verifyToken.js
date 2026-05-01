@@ -4,8 +4,11 @@ const SECRET = process.env.JWT_SECRET;
 
 const verifyToken = (req, res, next) => {
   try {
+    console.log("VERIFY TOKEN HIT");
     // Get Authorization header
     const header = req.get("Authorization");
+
+    console.log("AUTH HEADER:", header);
 
     if (!header) {
       return res.status(401).json({ error: "No token provided" });
@@ -20,6 +23,7 @@ const verifyToken = (req, res, next) => {
 
     // Verify token
     const decoded = jwt.verify(token, SECRET);
+    console.log("SECRET:", decoded);
 
     // Attach to request
     req.user = decoded;

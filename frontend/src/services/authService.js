@@ -73,4 +73,4 @@ const secret = async () => {
   }
 }
 
-export { login, signup, getToken, logout, secret};
+export { login, signup, getToken, logout, secret, BASE_URL};
