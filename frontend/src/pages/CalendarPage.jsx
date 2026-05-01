@@ -1,11 +1,14 @@
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid"; // a plugin!
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getSessions } from "../services/sessionService";
+import { getPrograms } from "../services/programService";
 
 export default function Calendar() {
   const calendarRef = useRef(null);
   const [events, setEvents] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const updateCalendarHeight = () => {
@@ -25,16 +28,28 @@ export default function Calendar() {
   useEffect(() => {
     async function fetchSessions() {
       try {
-        const sessions = await getSessions();
+        const [sessions, programs] = await Promise.all([
+          getSessions(),
+          getPrograms(),
+        ]);
+
+        const programMap = (programs || []).reduce((acc, p) => {
+          acc[p._id] = p.name;
+          return acc;
+        }, {});
 
         const calendarEvents = (sessions || []).map((session) => {
           const title =
-            session.day?.name || session.program?.name || "Workout Session";
+            session.day?.name ||
+            programMap[session.program] ||
+            "Workout Session";
 
           return {
+            id: session._id,
             title: session.status === "completed" ? `${title} (done)` : title,
-            start: session.startTime,
+            start: session.startTime.split("T")[0],
             allDay: true,
+            extendedProps: { sessionId: session._id },
           };
         });
 
@@ -56,11 +71,10 @@ export default function Calendar() {
         initialView="dayGridMonth"
         expandRows={true}
         events={events}
-        events={[
-          { title: "aloysious birthday", date: "2026-04-01" },
-          { title: "jia rui birthday", date: "2026-04-02" },
-          { title: "nicholas birthday", date: "2026-04-03" },
-        ]}
+        eventClick={(info) => {
+          const date = info.event.startStr;
+          navigate(`/history?date=${date}`);
+        }}
       />
     </div>
   );

@@ -1,67 +1,103 @@
-const WorkoutSession = require("../models/Session");
+const Session = require("../models/Session");
 const Day = require("../models/Day");
-const express = require("express");
 
-exports.getSessions = async (req, res) => {
+// Start session
+exports.startSession = async (req, res) => {
   try {
-    const sessions = await WorkoutSession.find({ user: req.user.userId });
-    res.json(sessions);
+    const { programId, dayId } = req.body;
+
+    const day = await Day.findById(dayId);
+
+    if (!day) {
+      return res.status(404).json({ error: "Day not found" });
+    }
+
+    // copy exercises from Day
+    const exercises = day.exercises.map((ex) => ({
+      name: ex.name,
+      sets: ex.sets.map((s) => ({
+        weight: s.weight || 0,
+        reps: s.reps || 0,
+      })),
+    }));
+
+    const session = await Session.create({
+      user: req.user.userId,
+      program: programId,
+      day: dayId,
+      exercises,
+      status: "in_progress",
+      startTime: new Date(),
+    });
+
+    res.json(session);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-exports.startSession = async (req, res) => {
-    try {
-        const session = await WorkoutSession.create({
-            user: req.user.userId, 
-            program: req.body.programId,
-            day: req.body.dayId,
-            startTime: new Date(),
-            status: "in_progress",
-        });
+// Get session
+exports.getSessionById = async (req, res) => {
+  try {
+    const session = await Session.findById(req.params.sessionId);
 
-        res.status(200).json(session);
-    } catch (err) {
-        res.status(500).json({error: err.message});
+    if (!session) {
+      return res.status(404).json({ error: "Session not found" });
     }
-}
 
+    res.json(session);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Update session (save inputs)
 exports.updateSession = async (req, res) => {
-    const {sessionId, exercises} = req.body();
+  try {
+    const { sessionId } = req.params;
+    const { exercises } = req.body;
 
-    const updated = await WorkoutSession.findByIdAndUpdate(
-        sessionId,
-        {exercises},
-        {new: true},
-    )
-}
+    const updated = await Session.findByIdAndUpdate(
+      sessionId,
+      { exercises },
+      { new: true }
+    );
 
+    res.json(updated);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// End session
 exports.endSession = async (req, res) => {
-    try {
-        const { sessionId } = req.params;
+  try {
+    const { sessionId } = req.params;
 
-        const session = await WorkoutSession.findByIdAndUpdate(
-            sessionId,
-            {
-                endTime: Date.now(),
-                status: "completed",
-                duration: session.endTime - session.startTime,
-            },
-            { new: true }
-        );
+    const session = await Session.findById(sessionId);
 
-        if (!session) {
-            return res.status(404).json({message: "Session not found."});
-        }
-
-        await Day.findByIdAndUpdate(session.day, {
-            status: "completed",
-            completedAt: Date.now(),
-        })
-
-        res.status(200).json(session);
-    } catch (err) {
-        res.status(500).json({error: err.message});
+    if (!session) {
+      return res.status(404).json({ error: "Session not found" });
     }
-}
+
+    session.status = "completed";
+    session.endTime = new Date();
+
+    await session.save();
+
+    res.json(session);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.getSessions = async (req, res) => {
+  try {
+    const sessions = await Session.find({ user: req.user.userId })
+      .sort({ startTime: -1 });
+
+    res.json(sessions);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

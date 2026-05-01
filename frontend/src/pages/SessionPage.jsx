@@ -1,49 +1,99 @@
-import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
 import { useEffect, useState } from "react";
-import { getSessions } from "../services/sessionService";
+import { useParams, useNavigate } from "react-router-dom";
+
+import { getSession, updateSession, endSession } from "../services/sessionService";
+
+import {
+  Container,
+  Typography,
+  Card,
+  CardContent,
+  Stack,
+  TextField,
+  Button,
+  Divider,
+} from "@mui/material";
 
 export default function SessionPage() {
-  const [sessions, setSessions] = useState([]);
+  const { sessionId } = useParams();
+  const navigate = useNavigate();
+
+  const [session, setSession] = useState(null);
 
   useEffect(() => {
-    async function fetchSessions() {
-      const data = await getSessions();
-      setSessions(data || []);
+    if (sessionId) {
+      localStorage.setItem("activeSessionId", sessionId);
     }
+    const fetchSession = async () => {
+      const data = await getSession(sessionId);
+      setSession(data);
+    };
 
-    fetchSessions();
-  }, []);
+    fetchSession();
+  }, [sessionId]);
+
+  const updateSet = (exerciseIndex, setIndex, field, value) => {
+    const updated = { ...session };
+    updated.exercises[exerciseIndex].sets[setIndex][field] = value;
+    setSession(updated);
+  };
+
+  const handleFinish = async () => {
+    await updateSession(sessionId, session.exercises);
+    await endSession(sessionId);
+
+    localStorage.removeItem("activeSessionId");
+
+    navigate("/history");
+  };
+
+  if (!session) return <Typography>Loading...</Typography>;
 
   return (
-    <Box sx={{ p: 3, textAlign: "center" }}>
-      <Typography variant="h4" sx={{ color: "#eaff00" }}>
-        Session
+    <Container maxWidth="md" sx={{ py: 6 }}>
+      <Typography variant="h4" sx={{ textAlign: "center", mb: 4 }}>
+        Workout Session
       </Typography>
 
-      
-      {sessions.length === 0 ? (
-        <Typography sx={{ mt: 1, color: "#ddd" }}>
-          Track your workout session details here.
-        </Typography>
-      ) : (
-        <>
-          <Typography sx={{ mt: 1, color: "#ddd" }}>
-            Your session history:
-          </Typography>
+      <Stack spacing={3}>
+        {session.exercises.map((ex, i) => (
+          <Card key={i}>
+            <CardContent>
+              <Typography variant="h6">{ex.name}</Typography>
 
-          {sessions.map((session) => (
-            <Box key={session._id} sx={{ mt: 2 }}>
-              <Typography sx={{ color: "#fff" }}>
-                Status: {session.status}
-              </Typography>
-              <Typography sx={{ color: "#aaa" }}>
-                Duration: {session.duration || "In progress"}
-              </Typography>
-            </Box>
-          ))}
-        </>
-      )}
-    </Box>
+              <Stack spacing={2} sx={{ mt: 2 }}>
+                {ex.sets.map((set, j) => (
+                  <Stack key={j} direction="row" spacing={2}>
+                    <TextField
+                      label={`Set ${j + 1} Weight`}
+                      type="number"
+                      value={set.weight}
+                      onChange={(e) =>
+                        updateSet(i, j, "weight", e.target.value)
+                      }
+                    />
+
+                    <TextField
+                      label={`Set ${j + 1} Reps`}
+                      type="number"
+                      value={set.reps}
+                      onChange={(e) =>
+                        updateSet(i, j, "reps", e.target.value)
+                      }
+                    />
+                  </Stack>
+                ))}
+              </Stack>
+            </CardContent>
+          </Card>
+        ))}
+
+        <Divider />
+
+        <Button variant="contained" size="large" onClick={handleFinish}>
+          Finish Workout
+        </Button>
+      </Stack>
+    </Container>
   );
 }
