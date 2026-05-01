@@ -2,9 +2,11 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid"; // a plugin!
 import { useEffect, useRef, useState } from "react";
 import { getSessions } from "../services/sessionService";
+import { useNavigate } from "react-router-dom";
 
 export default function Calendar() {
   const calendarRef = useRef(null);
+  const navigate = useNavigate();
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
@@ -27,18 +29,20 @@ export default function Calendar() {
       try {
         const sessions = await getSessions();
 
-        const calendarEvents = (sessions || []).map((session) => {
-          const title =
-            session.day?.name || session.program?.name || "Workout Session";
+      const mappedEvents = sessions.map((session) => {
+        return {
+          title: `${session.day?.name || "Workout"} - ${
+            session.program?.name || ""
+          }`,
+          start: session.startTime.split("T")[0],
+          allDay: true,
+          extendedProps: {
+            sessionId: session._id,
+          },          
+        };
+      });
 
-          return {
-            title: session.status === "completed" ? `${title} (done)` : title,
-            start: session.startTime.split("T")[0],
-            allDay: true,
-          };
-        });
-
-        setEvents(calendarEvents);
+        setEvents(mappedEvents);
       } catch (err) {
         console.error("Failed to load sessions", err);
         setEvents([]);
@@ -56,6 +60,13 @@ export default function Calendar() {
         initialView="dayGridMonth"
         expandRows={true}
         events={events}
+        eventClick={(info) => {
+          const sessionId = info.event.extendedProps.sessionId;
+
+          if (sessionId) {
+            navigate(`/session/${sessionId}`);
+          }
+        }}        
       />
     </div>
   );
