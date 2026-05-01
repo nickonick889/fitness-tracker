@@ -4,18 +4,34 @@ const mongoose = require("mongoose");
 
 const { Schema, model } = mongoose;
 
+const dayExerciseSchema = new mongoose.Schema({
+  exerciseId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "ExerciseLibrary",
+    required: true,
+  },
+  name: {
+    type: String,
+    required: true,
+  },
+  sets: {
+    type: Number,
+  },
+  reps: {
+    type: Number,
+  },
+  weight: {
+    type: Number,
+  },
+});
+
 const daySchema = new Schema({
   program: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Program",
     required: true,
   },
-  exercises: [
-    {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Exercise"
-    }
-  ],
+  exercises: [dayExerciseSchema],
   name: {
     type: String,
     required: true,

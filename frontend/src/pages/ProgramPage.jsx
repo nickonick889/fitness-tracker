@@ -237,7 +237,7 @@ export default function ProgramPage() {
           }}
         >
 
-          {/* ADD DAY CARD (MATCHED STYLE) */}
+          {/* ADD DAY CARD */}
           <Card
             onClick={handleAddDay}
             sx={{
@@ -263,7 +263,7 @@ export default function ProgramPage() {
             </CardActionArea>
           </Card>
 
-          {/* DAY CARDS (MATCHED TO PROGRAM CARDS STYLE) */}
+          {/* DAY CARDS */}
           {program.days?.map((day) => (
             <Card
               key={day._id}

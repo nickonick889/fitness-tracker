@@ -11,6 +11,7 @@ import WorkoutPage from "./pages/WorkoutPage";
 import ProgramPage from "./pages/ProgramPage";
 import SessionPage from "./pages/SessionPage";
 import Calendar from "./pages/CalendarPage";
+import DayPage from "./pages/DayPage";
 
 import Typography from "@mui/material/Typography";
 
@@ -29,6 +30,7 @@ const App = () => {
         <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
         <Route path="/workouts" element={<ProtectedRoute><WorkoutPage /></ProtectedRoute>} />
         <Route path="/programs/:programId" element={<ProtectedRoute><ProgramPage /></ProtectedRoute>} />
+        <Route path="/programs/:programId/days/:dayId" element={<ProtectedRoute><DayPage /></ProtectedRoute>} />
         <Route path="/session" element={<ProtectedRoute><SessionPage /></ProtectedRoute>} />
         <Route path="/calendar" element={<ProtectedRoute><Calendar /></ProtectedRoute>} />
 
