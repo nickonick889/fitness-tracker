@@ -117,16 +117,15 @@ export default function DayPage() {
 
   const handleAddExercise = () => {
     setDay((prev) => ({
-        ...prev,
-        exercises: [
+      ...prev,
+      exercises: [
         ...(prev.exercises || []),
         {
-            exerciseId: "",
-            name: "",
-            sets: "",
-            reps: "",
+          exerciseId: null,
+          name: "",
+          sets: [],
         },
-        ],
+      ],
     }));
   };
 
@@ -135,6 +134,39 @@ export default function DayPage() {
       ...prev,
       exercises: prev.exercises.filter((_, i) => i !== index),
     }));
+  };
+
+  const addSet = (exerciseIndex) => {
+    setDay((prev) => {
+      const updated = structuredClone(prev); // or deep copy
+
+      updated.exercises[exerciseIndex].sets = [
+        ...updated.exercises[exerciseIndex].sets,
+        { weight: "", reps: "" },
+      ];
+
+      return updated;
+    });
+  };
+
+  const updateSet = (exerciseIndex, setIndex, field, value) => {
+    setDay((prev) => {
+      const updated = [...prev.exercises];
+
+      updated[exerciseIndex].sets[setIndex][field] = value;
+
+      return { ...prev, exercises: updated };
+    });
+  };
+
+  const deleteSet = (exerciseIndex, setIndex) => {
+    setDay((prev) => {
+      const updated = structuredClone(prev);
+
+      updated.exercises[exerciseIndex].sets.splice(setIndex, 1);
+
+      return updated;
+    });
   };
 
   const handleSave = async () => {
@@ -150,16 +182,15 @@ export default function DayPage() {
             Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({
-                exercises: day.exercises
-                    .filter(ex => ex.exerciseId)
-                    .map(ex => ({
-                    exerciseId: ex.exerciseId,
-                    name: ex.name,
-                    sets: Number(ex.sets) || 0,
-                    reps: Number(ex.reps) || 0,
-                    weight: Number(ex.weight) || 0,
-                    })),
-                }),
+                exercises: day.exercises.map((ex) => ({
+                  exerciseId: ex.exerciseId,
+                  name: ex.name,
+                  sets: ex.sets.map((s) => ({
+                    weight: Number(s.weight),
+                    reps: Number(s.reps),
+                  })),
+                }))
+              }),
         });
 
         if (!res.ok) {
@@ -251,76 +282,105 @@ export default function DayPage() {
         </IconButton>
         </Box>
 
-        {/* EXERCISE LIST */}
-        <Stack spacing={2}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+
+          {/* EXERCISE LIST */}
+        <Stack spacing={3}>
           {day.exercises?.map((ex, index) => (
-            <Box
-              key={index}
-              sx={{
-                display: "flex",
-                gap: 1,
-                alignItems: "center",
-              }}
-            >
-              <Autocomplete
-                sx={{ 
-                    width: 450,
-                    "& .MuiOutlinedInput-root": {
-                        padding: 0,
-                        minHeight: 56,
-                        alignItems: "center",
-                    },
-                        "& .MuiInputBase-input": {
-                        textAlign: "left",
-                    },
-                 }}
-                options={exerciseOptions}
-                getOptionLabel={(option) => option.name}
-                value={
-                    exerciseOptions.find((opt) => opt._id === ex.exerciseId) || null
-                }
-                onChange={(event, newValue) => {
-                    updateExercise(index, "exerciseId", newValue?._id || "");
+            <Box key={index} sx={{ mb: 2 }}>
+
+              {/* HEADER ROW: dropdown + delete */}
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+
+                <Autocomplete
+                  sx={{ width: 450 }}
+                  options={exerciseOptions}
+                  getOptionLabel={(option) => option.name || ""}
+                  value={
+                    exerciseOptions.find((opt) => opt._id === ex.exerciseId) ?? null
+                  }
+                  onChange={(event, newValue) => {
+                    updateExercise(index, "exerciseId", newValue?._id || null);
                     updateExercise(index, "name", newValue?.name || "");
-                }}
-                renderInput={(params) => (
+                  }}
+                  renderInput={(params) => (
                     <TextField {...params} label="Exercise" size="small" />
-                )}
-            />
+                  )}
+                />
 
-              <TextField
-                placeholder="Sets"
-                value={ex.sets}
-                onChange={(e) =>
-                  updateExercise(index, "sets", e.target.value)
-                }
-                sx={{ width: 80 }}
-              />
+                <IconButton
+                  onClick={() => handleDeleteExercise(index)}
+                  size="small"
+                  sx={{
+                    color: "rgba(255,255,255,0.6)",
+                    "&:hover": { color: "red" },
+                  }}
+                >
+                  <DeleteIcon fontSize="small" />
+                </IconButton>
 
-              <TextField
-                placeholder="Reps"
-                value={ex.reps}
-                onChange={(e) =>
-                  updateExercise(index, "reps", e.target.value)
-                }
-                sx={{ width: 80 }}
-              />
+              </Box>
 
-              <TextField
-                placeholder="Weight (kg)"
-                value={ex.weight || ""}
-                onChange={(e) =>
-                    updateExercise(index, "weight", e.target.value)
-                }
-                sx={{ width: 125 }}
-              />
+              {/* SETS */}
+              <Stack spacing={1} sx={{ mt: 1 }}>
+                {ex.sets?.map((set, setIndex) => (
+                  <Box
+                    key={setIndex}
+                    sx={{ display: "flex", gap: 1, alignItems: "center" }}
+                  >
+                    <Typography sx={{ width: 60 }}>
+                      Set {setIndex + 1}
+                    </Typography>
 
-              <IconButton onClick={() => handleDeleteExercise(index)}>
-                <DeleteIcon />
-              </IconButton>
+                    <TextField
+                      size="small"
+                      placeholder="reps"
+                      value={set.reps}
+                      onChange={(e) =>
+                        updateSet(index, setIndex, "reps", e.target.value)
+                      }
+                      sx={{ width: 100 }}
+                    />
+
+                    <Typography>x</Typography>
+
+                    <TextField
+                      size="small"
+                      placeholder="kg"
+                      value={set.weight}
+                      onChange={(e) =>
+                        updateSet(index, setIndex, "weight", e.target.value)
+                      }
+                      sx={{ width: 100 }}
+                    />
+
+                    <IconButton
+                      onClick={() => deleteSet(index, setIndex)}
+                      size="small"
+                      sx={{
+                        color: "rgba(255,255,255,0.6)",
+                        "&:hover": { color: "red" },
+                      }}
+                    >
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  </Box>
+                ))}
+              </Stack>
+
+              {/* ADD SET */}
+              <Button
+                size="small"
+                onClick={() => addSet(index)}
+                sx={{ mt: 1 }}
+              >
+                + Add Set
+              </Button>
+
             </Box>
           ))}
         </Stack>
+        </Box>
 
         {/* ACTIONS */}
         <Box sx={{ display: "flex", gap: 2 }}>

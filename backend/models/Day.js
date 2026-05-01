@@ -4,6 +4,11 @@ const mongoose = require("mongoose");
 
 const { Schema, model } = mongoose;
 
+const setSchema = new mongoose.Schema({
+  weight: Number,
+  reps: Number,
+});
+
 const dayExerciseSchema = new mongoose.Schema({
   exerciseId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -14,15 +19,7 @@ const dayExerciseSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  sets: {
-    type: Number,
-  },
-  reps: {
-    type: Number,
-  },
-  weight: {
-    type: Number,
-  },
+  sets: [setSchema],
 });
 
 const daySchema = new Schema({
