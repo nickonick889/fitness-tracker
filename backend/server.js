@@ -50,7 +50,7 @@ app.use("/api/templates", programTemplateRoutes);
 app.use("/api/session", sessionRoutes);
 app.use("/api/programs", programRoutes);
 
-// 404 HANDLER (ROUTE ERROR HANDLER)
+// 404 Handler (Route Error)
 app.use((req, res) => {
   res.status(404).json({ error: "Route not found" });
 });
@@ -60,7 +60,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// ERROR HANDLER (Shows Error message)
+// Error Handler (Shows Error message)
 app.use((err, req, res, next) => {
   console.error("ERROR:", err.message);
 

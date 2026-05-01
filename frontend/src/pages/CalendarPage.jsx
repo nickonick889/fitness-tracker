@@ -7,8 +7,8 @@ import { getPrograms } from "../services/programService";
 
 export default function Calendar() {
   const calendarRef = useRef(null);
-  const [events, setEvents] = useState([]);
   const navigate = useNavigate();
+  const [events, setEvents] = useState([]);
 
   useEffect(() => {
     const updateCalendarHeight = () => {
@@ -38,22 +38,34 @@ export default function Calendar() {
           return acc;
         }, {});
 
-        const calendarEvents = (sessions || []).map((session) => {
-          const title =
-            session.day?.name ||
-            programMap[session.program] ||
-            "Workout Session";
+        const mappedEvents = (sessions || []).map((session) => {
+          const dayName = session.day?.name || "Workout";
+
+          const programName =
+            session.program?.name ||
+            programMap?.[session.program] ||
+            "";
+
+          const baseTitle = programName
+            ? `${dayName} - ${programName}`
+            : dayName;
 
           return {
             id: session._id,
-            title: session.status === "completed" ? `${title} (done)` : title,
+
+            title: baseTitle,
+
             start: session.startTime.split("T")[0],
             allDay: true,
-            extendedProps: { sessionId: session._id },
+
+            extendedProps: {
+              sessionId: session._id,
+            },
           };
         });
 
-        setEvents(calendarEvents);
+        setEvents(mappedEvents);
+
       } catch (err) {
         console.error("Failed to load sessions", err);
         setEvents([]);
@@ -72,9 +84,16 @@ export default function Calendar() {
         expandRows={true}
         events={events}
         eventClick={(info) => {
-          const date = info.event.startStr;
-          navigate(`/history?date=${date}`);
-        }}
+            const sessionId = info.event.extendedProps.sessionId;
+
+            if (sessionId) {
+              navigate(`/session/${sessionId}`);
+            }
+          }}
+
+          dateClick={(info) => {
+            navigate(`/history?date=${info.dateStr}`);
+          }}      
       />
     </div>
   );

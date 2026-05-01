@@ -395,7 +395,6 @@ export default function DayPage() {
             Save
           </Button>
           
-          {/* 🔥 Start Workout Button */}
           <Button
             variant="outlined"
             onClick={async () => {

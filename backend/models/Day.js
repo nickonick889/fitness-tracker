@@ -15,7 +15,11 @@ const daySchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "ExerciseLibrary"
       },
-      name: String,
+      name: {
+        type: String,
+        required: true,
+        trim: true,
+      },
       sets: [
         {
           weight: Number,

@@ -122,7 +122,7 @@ exports.createFromTemplate = async (req, res) => {
         name: templateDay.name,
         exercises: templateDay.exercises.map(ex => ({
           exerciseId: ex.exerciseId,
-          name: ex.name,
+          name: ex.exerciseId?.name || ex.name || "Unknown Exercise",
           sets: ex.sets || []
         }))
       });
@@ -146,7 +146,7 @@ exports.deleteProgram = async (req, res) => {
   try {
     const { programId } = req.params;
 
-    // 1. Find program + ensure ownership
+
     const program = await Program.findOne({
       _id: programId,
       user: req.user.userId,
@@ -156,10 +156,10 @@ exports.deleteProgram = async (req, res) => {
       return res.status(404).json({ message: "Program not found" });
     }
 
-    // 2. Delete related days
+    // Delete related days
     await Day.deleteMany({ program: programId });
 
-    // 3. Delete program
+    // Delete program
     await Program.findByIdAndDelete(programId);
 
     return res.status(200).json({

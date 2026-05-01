@@ -75,7 +75,7 @@ export default function ProgramPage() {
         }),
       });
 
-      const text = await res.text(); // 👈 IMPORTANT DEBUG STEP
+      const text = await res.text(); // 
       console.log("Rename response:", text);
 
       if (!res.ok) {
@@ -312,7 +312,6 @@ export default function ProgramPage() {
                 <DeleteIcon fontSize="small" />
               </IconButton>
 
-              {/* CLICKABLE AREA */}
               <CardActionArea
                 onClick={() =>
                   navigate(`/programs/${programId}/days/${day._id}`)

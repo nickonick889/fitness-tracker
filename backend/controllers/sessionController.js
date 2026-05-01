@@ -6,7 +6,7 @@ exports.startSession = async (req, res) => {
   try {
     const { programId, dayId } = req.body;
 
-    const day = await Day.findById(dayId);
+    const day = await Day.findById(dayId).populate("exercises.exerciseId");
 
     if (!day) {
       return res.status(404).json({ error: "Day not found" });
@@ -14,11 +14,13 @@ exports.startSession = async (req, res) => {
 
     // copy exercises from Day
     const exercises = day.exercises.map((ex) => ({
-      name: ex.name,
-      sets: ex.sets.map((s) => ({
+    // 🔥 FIX: always get a valid name
+    name: ex.exerciseId?.name || ex.name || "Unknown Exercise",
+
+    sets: ex.sets.map((s) => ({
         weight: s.weight || 0,
         reps: s.reps || 0,
-      })),
+    })),
     }));
 
     const session = await Session.create({
@@ -94,9 +96,30 @@ exports.endSession = async (req, res) => {
 exports.getSessions = async (req, res) => {
   try {
     const sessions = await Session.find({ user: req.user.userId })
-      .sort({ startTime: -1 });
+        .populate("day")
+        .populate("program")
+        .sort({ startTime: -1 });
 
     res.json(sessions);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.deleteSession = async (req, res) => {
+  try {
+    const { sessionId } = req.params;
+
+    const deleted = await Session.findOneAndDelete({
+      _id: sessionId,
+      user: req.user.userId,
+    });
+
+    if (!deleted) {
+      return res.status(404).json({ error: "Session not found" });
+    }
+
+    res.json({ message: "Session deleted successfully" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

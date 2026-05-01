@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-
 import { getSession, updateSession, endSession } from "../services/sessionService";
 
 import {
@@ -21,16 +20,26 @@ export default function SessionPage() {
   const [session, setSession] = useState(null);
 
   useEffect(() => {
-    if (sessionId) {
-      localStorage.setItem("activeSessionId", sessionId);
-    }
     const fetchSession = async () => {
-      const data = await getSession(sessionId);
-      setSession(data);
+      try {
+        const data = await getSession(sessionId);
+        setSession(data);
+
+        if (data.status === "in_progress") {
+          localStorage.setItem("activeSessionId", sessionId);
+        } else {
+          localStorage.removeItem("activeSessionId");
+        }
+
+      } catch (err) {
+        console.error(err.message);
+      }
     };
 
     fetchSession();
   }, [sessionId]);
+
+  const isCompleted = session?.status === "completed";
 
   const updateSet = (exerciseIndex, setIndex, field, value) => {
     const updated = { ...session };
@@ -69,8 +78,9 @@ export default function SessionPage() {
                       type="number"
                       value={set.weight}
                       onChange={(e) =>
-                        updateSet(i, j, "weight", e.target.value)
+                        updateSet(i, j, "weight", e.target.value) 
                       }
+                      disabled={isCompleted}
                     />
 
                     <TextField
@@ -80,6 +90,7 @@ export default function SessionPage() {
                       onChange={(e) =>
                         updateSet(i, j, "reps", e.target.value)
                       }
+                      disabled={isCompleted}
                     />
                   </Stack>
                 ))}
@@ -90,8 +101,8 @@ export default function SessionPage() {
 
         <Divider />
 
-        <Button variant="contained" size="large" onClick={handleFinish}>
-          Finish Workout
+        <Button variant="contained" size="large" onClick={handleFinish} disabled={isCompleted}>
+          {isCompleted ? "Completed" : "Finish Workout"}
         </Button>
       </Stack>
     </Container>

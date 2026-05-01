@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { getSessions } from "../services/sessionService";
+import { useNavigate } from "react-router-dom";
+import { getSessions, deleteSession } from "../services/sessionService";
 
 import {
   Container,
@@ -9,13 +10,16 @@ import {
   CardContent,
   Stack,
   Box,
+  IconButton,
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function HistoryPage() {
   const [sessions, setSessions] = useState([]);
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const dateFilter = params.get("date");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchSessions = async () => {
@@ -30,59 +34,134 @@ export default function HistoryPage() {
     fetchSessions();
   }, []);
 
+
+  const getDuration = (start, end) => {
+    if (!end) return null;
+    const diffMs = new Date(end) - new Date(start);
+    const mins = Math.floor(diffMs / 60000);
+    const secs = Math.floor((diffMs % 60000) / 1000);
+    return `${mins}m ${secs}s`;
+  };
+
+  const formatDate = (date) =>
+    new Date(date).toLocaleString("en-GB", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+
+  const handleDelete = async (sessionId) => {
+    if (!window.confirm("Delete this workout?")) return;
+
+    try {
+      await deleteSession(sessionId);
+      setSessions((prev) => prev.filter((s) => s._id !== sessionId));
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+
   return (
     <Container maxWidth="md" sx={{ py: 6 }}>
       <Typography variant="h4" sx={{ mb: 4 }}>
         {dateFilter ? `Workout History — ${dateFilter}` : "Workout History"}
       </Typography>
 
-      <Stack spacing={2}>
+     <Stack spacing={2}>
         {(dateFilter
-          ? sessions.filter((s) => s.startTime.split("T")[0] === dateFilter)
-          : sessions
+            ? sessions.filter(
+                (s) => s.startTime.split("T")[0] === dateFilter
+            )
+            : sessions
         ).map((session) => (
-          <Card key={session._id}>
+            <Card
+            key={session._id}
+            onClick={() => navigate(`/session/${session._id}`)}
+            sx={{
+                cursor: "pointer",
+                transition: "0.2s",
+                "&:hover": {
+                transform: "scale(1.02)",
+                boxShadow: "0 0 12px rgba(234,255,0,0.25)",
+                },
+            }}
+            >
             <CardContent>
-              {/* Header */}
-              <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                {session.status === "completed"
-                  ? "Completed Workout"
-                  : "In Progress"}
-              </Typography>
-
-              <Typography variant="body2" sx={{ color: "#aaa", mb: 2 }}>
-                {new Date(session.startTime).toLocaleString()}
-              </Typography>
-
-              <Box
+                {/* Header */}
+                <Box
                 sx={{
-                  borderTop: "1px solid rgba(255,255,255,0.1)",
-                  mt: 2,
-                  pt: 2,
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
                 }}
-              >
+                >
+                <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                    {session.status === "completed"
+                    ? "Completed Workout"
+                    : "In Progress"}
+                </Typography>
+
+                <IconButton
+                    onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(session._id);
+                    }}
+                    sx={{
+                    color: "#ff6b6b",
+                    "&:hover": {
+                        background: "rgba(255,0,0,0.1)",
+                    },
+                    }}
+                >
+                    <DeleteIcon />
+                </IconButton>
+                </Box>
+
+                {/* Date */}
+                <Typography sx={{ color: "#aaa", mb: 1 }}>
+                {formatDate(session.startTime)}
+                </Typography>
+
+                {/* Duration */}
+                {session.endTime && (
+                <Typography sx={{ color: "#aaa", mb: 2 }}>
+                    Duration: {getDuration(session.startTime, session.endTime)}
+                </Typography>
+                )}
+
+                {/* Divider + Exercises */}
+                <Box
+                sx={{
+                    borderTop: "1px solid rgba(255,255,255,0.1)",
+                    mt: 2,
+                    pt: 2,
+                }}
+                >
                 {session.exercises?.map((exercise) => (
-                  <Box key={exercise._id} sx={{ mb: 2 }}>
+                    <Box key={exercise._id} sx={{ mb: 2 }}>
                     <Typography sx={{ fontWeight: 600 }}>
-                      {exercise.name}
+                        {exercise.name}
                     </Typography>
 
                     {exercise.sets.map((set, index) => (
-                      <Typography
+                        <Typography
                         key={set._id}
                         variant="body2"
                         sx={{ color: "#ccc" }}
-                      >
+                        >
                         Set {index + 1}: {set.weight}kg × {set.reps}
-                      </Typography>
+                        </Typography>
                     ))}
-                  </Box>
+                    </Box>
                 ))}
-              </Box>
+                </Box>
             </CardContent>
-          </Card>
+            </Card>
         ))}
-      </Stack>
+        </Stack>
     </Container>
   );
 }

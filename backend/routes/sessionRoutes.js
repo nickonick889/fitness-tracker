@@ -10,5 +10,6 @@ router.get("/:sessionId", verifyToken, controller.getSessionById);
 router.put("/:sessionId", verifyToken, controller.updateSession);
 router.put("/:sessionId/end", verifyToken, controller.endSession);
 router.get("/", verifyToken, controller.getSessions);
+router.delete("/:sessionId", verifyToken, controller.deleteSession);
 
 module.exports = router;
