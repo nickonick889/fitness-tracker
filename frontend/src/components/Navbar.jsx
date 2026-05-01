@@ -6,16 +6,20 @@ import Box from "@mui/material/Box";
 import { NavLink } from "react-router-dom";
 // import logo from "../assets/logo.png";
 import { getToken, logout } from "../services/authService";
+import { useNavigate } from "react-router-dom";
+
 
 export default function Navbar() {
+  const navigate = useNavigate();
+  const activeSessionId = localStorage.getItem("activeSessionId");
+  const token = getToken();
+  
   const navItems = [
     { label: "Home", path: "/" },
     { label: "Workouts", path: "/workouts" },
-    { label: "Session", path: "/session" },
+    { label: "History", path: "/history" },  
     { label: "Calendar", path: "/calendar" },
   ];
-
-  const token = getToken();
 
   const handleLogout = () => {
     logout(); // remove token
@@ -125,6 +129,27 @@ export default function Navbar() {
               )}
             </NavLink>
           ))}
+          
+          {activeSessionId && (
+              <Button
+                onClick={() => navigate(`/session/${activeSessionId}`)}
+                sx={{
+                  color: "#aaa",
+                  fontWeight: 600,
+                  borderRadius: "999px",
+                  px: 2,
+                  textTransform: "none",
+                  transition: "0.2s",
+                  "&:hover": {
+                    background: "rgba(234,255,0,0.08)",
+                    color: "#eaff00",
+                  },
+                }}
+              >
+                Session
+              </Button>
+            )}
+
         </Box>
       </Box>
     </AppBar>

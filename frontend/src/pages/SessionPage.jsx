@@ -21,6 +21,9 @@ export default function SessionPage() {
   const [session, setSession] = useState(null);
 
   useEffect(() => {
+    if (sessionId) {
+      localStorage.setItem("activeSessionId", sessionId);
+    }
     const fetchSession = async () => {
       const data = await getSession(sessionId);
       setSession(data);
@@ -38,7 +41,10 @@ export default function SessionPage() {
   const handleFinish = async () => {
     await updateSession(sessionId, session.exercises);
     await endSession(sessionId);
-    navigate("/");
+
+    localStorage.removeItem("activeSessionId");
+
+    navigate("/history");
   };
 
   if (!session) return <Typography>Loading...</Typography>;
