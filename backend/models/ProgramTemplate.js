@@ -6,7 +6,7 @@ const templateExerciseSchema = new Schema(
   {
     exercise: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Exercise", // reference your Exercise model (Are we using the DB to populate or hard coding)
+      ref: "Exercise",
       required: true,
     },
     targetSets: {

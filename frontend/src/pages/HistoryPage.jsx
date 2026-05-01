@@ -31,7 +31,6 @@ export default function HistoryPage() {
   }, []);
 
 
-  // 🔥 duration helper
   const getDuration = (start, end) => {
     if (!end) return null;
     const diffMs = new Date(end) - new Date(start);
@@ -40,7 +39,6 @@ export default function HistoryPage() {
     return `${mins}m ${secs}s`;
   };
 
-  // 🔥 date format helper
   const formatDate = (date) =>
     new Date(date).toLocaleString("en-GB", {
       day: "numeric",
@@ -51,7 +49,6 @@ export default function HistoryPage() {
       hour12: true,
     });
 
-  // 🔥 delete handler
   const handleDelete = async (sessionId) => {
     if (!window.confirm("Delete this workout?")) return;
 
@@ -115,7 +112,7 @@ export default function HistoryPage() {
                 {formatDate(session.startTime)}
               </Typography>
 
-              {/* 🔥 DURATION */}
+
               {session.endTime && (
                 <Typography sx={{ color: "#aaa", mb: 2 }}>
                   Duration: {getDuration(session.startTime, session.endTime)}

@@ -17,17 +17,17 @@ import HistoryPage from "./pages/HistoryPage";
 import Typography from "@mui/material/Typography";
 
 const App = () => {
-  const { user, setUser } = useContext(UserContext); //it's not used, not sure if you guys will use it later
+  const { user, setUser } = useContext(UserContext);
 
   return (
     <>
       <Navbar />
       <Routes>
-        {/* Public */}
+        //Public Routes
         <Route path="/login" element={<LoginForm />} />
         <Route path="/users/new" element={<SignupForm />} />
 
-        {/* App pages (Protected Routes) */}
+        // Protected Routes
         <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
         <Route path="/workouts" element={<ProtectedRoute><WorkoutPage /></ProtectedRoute>} />
         <Route path="/programs/:programId" element={<ProtectedRoute><ProgramPage /></ProtectedRoute>} />

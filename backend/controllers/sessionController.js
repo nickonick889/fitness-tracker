@@ -94,9 +94,30 @@ exports.endSession = async (req, res) => {
 exports.getSessions = async (req, res) => {
   try {
     const sessions = await Session.find({ user: req.user.userId })
-      .sort({ startTime: -1 });
+        .populate("day")
+        .populate("program")
+        .sort({ startTime: -1 });
 
     res.json(sessions);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.deleteSession = async (req, res) => {
+  try {
+    const { sessionId } = req.params;
+
+    const deleted = await Session.findOneAndDelete({
+      _id: sessionId,
+      user: req.user.userId,
+    });
+
+    if (!deleted) {
+      return res.status(404).json({ error: "Session not found" });
+    }
+
+    res.json({ message: "Session deleted successfully" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
