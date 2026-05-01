@@ -33,7 +33,7 @@ export default function Calendar() {
 
           return {
             title: session.status === "completed" ? `${title} (done)` : title,
-            start: session.startTime,
+            start: session.startTime.split("T")[0],
             allDay: true,
           };
         });
@@ -56,11 +56,6 @@ export default function Calendar() {
         initialView="dayGridMonth"
         expandRows={true}
         events={events}
-        events={[
-          { title: "aloysious birthday", date: "2026-04-01" },
-          { title: "jia rui birthday", date: "2026-04-02" },
-          { title: "nicholas birthday", date: "2026-04-03" },
-        ]}
       />
     </div>
   );
