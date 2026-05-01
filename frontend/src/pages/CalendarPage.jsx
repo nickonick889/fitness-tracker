@@ -1,7 +1,8 @@
 import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid"; // a plugin!
+import dayGridPlugin from "@fullcalendar/daygrid";
 import { useEffect, useRef, useState } from "react";
 
+import { getSessions } from "../services/sessionService";
 
 export default function Calendar() {
   const calendarRef = useRef(null);
@@ -33,7 +34,7 @@ export default function Calendar() {
 
           return {
             title: session.status === "completed" ? `${title} (done)` : title,
-            start: session.startTime,
+            date: session.startTime,
             allDay: true,
           };
         });
@@ -56,11 +57,6 @@ export default function Calendar() {
         initialView="dayGridMonth"
         expandRows={true}
         events={events}
-        events={[
-          { title: "aloysious birthday", date: "2026-04-01" },
-          { title: "jia rui birthday", date: "2026-04-02" },
-          { title: "nicholas birthday", date: "2026-04-03" },
-        ]}
       />
     </div>
   );

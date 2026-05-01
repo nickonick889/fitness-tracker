@@ -1,0 +1,25 @@
+info:
+  name: PostSessionTest
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: http://localhost:3000/api/session/start
+  headers:
+    - name: Bearer
+      value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OWYzNTQ5MjIzNGM3YWVmMWRhOGI5NjkiLCJpYXQiOjE3Nzc2MjE1OTIsImV4cCI6MTc3NzYyNTE5Mn0.PpA8KpfHstHTTT0XidcDVH5_MePTDnNfPZzEu31wJl0
+  body:
+    type: json
+    data: |-
+      {
+        "programId": "67a1c2d3e4f5a6b7c8d9e0f1",
+        "dayId": "67a1c2d3e4f5a6b7c8d9e0f2"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
