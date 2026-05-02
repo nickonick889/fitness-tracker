@@ -18,12 +18,12 @@ import { useNavigate, useParams } from "react-router-dom";
 export default function ProgramPage() {
   const { programId } = useParams();
   const navigate = useNavigate();
-  const BASE_URL = "http://localhost:3000";
+  const BASE_URL = import.meta.env.VITE_BACK_END_SERVER_URL;
 
   const [program, setProgram] = useState(null);
   const [isEditingName, setIsEditingName] = useState(false);
   const [nameInput, setNameInput] = useState("");
-  
+
   useEffect(() => {
     const fetchProgram = async () => {
       try {
@@ -33,7 +33,7 @@ export default function ProgramPage() {
           headers: {
             Authorization: `Bearer ${token}`,
             "Cache-Control": "no-cache",
-            "Pragma": "no-cache",
+            Pragma: "no-cache",
           },
         });
 
@@ -56,52 +56,49 @@ export default function ProgramPage() {
   }, [programId]);
 
   useEffect(() => {
-      if (program) {
-        setNameInput(program.name);
-      }
-    }, [program]);
+    if (program) {
+      setNameInput(program.name);
+    }
+  }, [program]);
 
-    const handleRenameProgram = async () => {
-      const token = localStorage.getItem("token");
+  const handleRenameProgram = async () => {
+    const token = localStorage.getItem("token");
 
-      const res = await fetch(`${BASE_URL}/api/programs/${programId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          name: nameInput,
-        }),
-      });
+    const res = await fetch(`${BASE_URL}/api/programs/${programId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        name: nameInput,
+      }),
+    });
 
-      const text = await res.text(); // 
-      console.log("Rename response:", text);
+    const text = await res.text(); //
+    console.log("Rename response:", text);
 
-      if (!res.ok) {
-        console.error("Failed to rename program");
-        return;
-      }
+    if (!res.ok) {
+      console.error("Failed to rename program");
+      return;
+    }
 
-      const updated = JSON.parse(text);
-      setProgram(updated);
-      setIsEditingName(false);
-    };
+    const updated = JSON.parse(text);
+    setProgram(updated);
+    setIsEditingName(false);
+  };
 
   const handleAddDay = async () => {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await fetch(
-        `${BASE_URL}/api/days/${programId}/add`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await fetch(`${BASE_URL}/api/days/${programId}/add`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       const text = await res.text();
       console.log("ADD DAY RESPONSE:", text);
@@ -158,7 +155,6 @@ export default function ProgramPage() {
   return (
     <Container maxWidth="lg" sx={{ py: 5 }}>
       <Stack spacing={3}>
-
         {/* HEADER */}
         <Box
           sx={{
@@ -223,8 +219,6 @@ export default function ProgramPage() {
           </IconButton>
         </Box>
 
-        
-
         {/* GRID */}
         <Box
           sx={{
@@ -237,7 +231,6 @@ export default function ProgramPage() {
             gap: 2,
           }}
         >
-
           {/* ADD DAY CARD */}
           <Card
             onClick={handleAddDay}
@@ -257,9 +250,7 @@ export default function ProgramPage() {
             <CardActionArea sx={{ height: "100%" }}>
               <CardContent sx={{ textAlign: "center" }}>
                 <Typography variant="h3">+</Typography>
-                <Typography sx={{ fontWeight: 700 }}>
-                  Add New Day
-                </Typography>
+                <Typography sx={{ fontWeight: 700 }}>Add New Day</Typography>
               </CardContent>
             </CardActionArea>
           </Card>
@@ -319,9 +310,7 @@ export default function ProgramPage() {
                 sx={{ height: "100%", width: "100%" }}
               >
                 <CardContent sx={{ textAlign: "center" }}>
-                  <Typography sx={{ fontWeight: 700 }}>
-                    {day.name}
-                  </Typography>
+                  <Typography sx={{ fontWeight: 700 }}>{day.name}</Typography>
                 </CardContent>
               </CardActionArea>
             </Card>

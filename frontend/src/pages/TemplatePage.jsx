@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 export default function TemplatePage() {
   const [templates, setTemplates] = useState([]);
   const navigate = useNavigate();
-  const BASE_URL = "http://localhost:3000";
+  const BASE_URL = import.meta.env.VITE_BACK_END_SERVER_URL;
 
   // Load templates
   useEffect(() => {
@@ -44,17 +44,14 @@ export default function TemplatePage() {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await fetch(
-        `${BASE_URL}/api/programs/fromTemplate`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ templateId }),
-        }
-      );
+      const res = await fetch(`${BASE_URL}/api/programs/fromTemplate`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ templateId }),
+      });
 
       if (!res.ok) {
         console.error("Failed to create program from template");
@@ -74,13 +71,9 @@ export default function TemplatePage() {
   return (
     <Container maxWidth="lg" sx={{ py: 5 }}>
       <Stack spacing={3}>
-
         {/* HEADER */}
         <Box>
-          <Typography
-            variant="h5"
-            sx={{ fontWeight: 800, color: "#eaff00" }}
-          >
+          <Typography variant="h5" sx={{ fontWeight: 800, color: "#eaff00" }}>
             Choose a Template
           </Typography>
 
@@ -146,7 +139,6 @@ export default function TemplatePage() {
             </Card>
           ))}
         </Box>
-
       </Stack>
     </Container>
   );

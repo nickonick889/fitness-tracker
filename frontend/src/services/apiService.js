@@ -1,6 +1,6 @@
 import { getToken } from "./authService";
 
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = import.meta.env.VITE_BACK_END_SERVER_URL;
 
 const request = async (url, method = "GET", body = null) => {
   const token = getToken();

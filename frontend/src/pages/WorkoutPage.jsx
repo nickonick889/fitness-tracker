@@ -20,7 +20,7 @@ export default function WorkoutPage() {
   const navigate = useNavigate();
   const [programs, setPrograms] = useState([]);
   const [openCreateModal, setOpenCreateModal] = useState(false);
-  const BASE_URL = "http://localhost:3000";
+  const BASE_URL = import.meta.env.VITE_BACK_END_SERVER_URL;
 
   // Load programs for user
   useEffect(() => {
@@ -157,80 +157,80 @@ export default function WorkoutPage() {
           </Card>
 
           {/* PROGRAM CARD */}
-        {programs.map((program) => (
-          <Card
-            key={program._id}
-            sx={{
-              position: "relative",
-              cursor: "pointer",
-              border: "1px solid rgba(234,255,0,0.2)",
-              background: "rgba(255,255,255,0.03)",
-              minHeight: 140,
-              height: "100%",
-              display: "flex",
-              flexDirection: "column",
-              "&:hover": {
-                background: "rgba(234,255,0,0.05)",
-              },
-
-              // show delete button on hover
-              "&:hover .delete-btn": {
-                opacity: 1,
-                transform: "scale(1)",
-              },
-            }}
-          >
-            {/* DELETE BUTTON */}
-            <IconButton
-              className="delete-btn"
-              size="small"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleDeleteProgram(program._id);
-              }}
+          {programs.map((program) => (
+            <Card
+              key={program._id}
               sx={{
-                position: "absolute",
-                top: 6,
-                right: 6,
-                zIndex: 10, // IMPORTANT
-                color: "#fff",
-                backgroundColor: "rgba(0,0,0,0.4)",
-                opacity: 0,
-                transform: "scale(0.8)",
-                transition: "all 0.15s ease-in-out",
+                position: "relative",
+                cursor: "pointer",
+                border: "1px solid rgba(234,255,0,0.2)",
+                background: "rgba(255,255,255,0.03)",
+                minHeight: 140,
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
                 "&:hover": {
-                  backgroundColor: "rgba(255,0,0,0.2)",
-                  color: "red",
+                  background: "rgba(234,255,0,0.05)",
+                },
+
+                // show delete button on hover
+                "&:hover .delete-btn": {
+                  opacity: 1,
+                  transform: "scale(1)",
                 },
               }}
             >
-              <DeleteIcon fontSize="small" />
-            </IconButton>
-
-            {/* CLICKABLE AREA (NO OVERLAY ISSUES) */}
-            <CardActionArea
-              onClick={() => navigate(`/programs/${program._id}`)}
-              sx={{
-                height: "100%",
-                position: "relative",
-                zIndex: 1,
-              }}
-            >
-              <CardContent
+              {/* DELETE BUTTON */}
+              <IconButton
+                className="delete-btn"
+                size="small"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteProgram(program._id);
+                }}
                 sx={{
-                  height: "100%",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  position: "absolute",
+                  top: 6,
+                  right: 6,
+                  zIndex: 10, // IMPORTANT
+                  color: "#fff",
+                  backgroundColor: "rgba(0,0,0,0.4)",
+                  opacity: 0,
+                  transform: "scale(0.8)",
+                  transition: "all 0.15s ease-in-out",
+                  "&:hover": {
+                    backgroundColor: "rgba(255,0,0,0.2)",
+                    color: "red",
+                  },
                 }}
               >
-                <Typography sx={{ fontWeight: 700, color: "#eaff00" }}>
-                  {program.name}
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-          </Card>
-        ))}
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+
+              {/* CLICKABLE AREA (NO OVERLAY ISSUES) */}
+              <CardActionArea
+                onClick={() => navigate(`/programs/${program._id}`)}
+                sx={{
+                  height: "100%",
+                  position: "relative",
+                  zIndex: 1,
+                }}
+              >
+                <CardContent
+                  sx={{
+                    height: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography sx={{ fontWeight: 700, color: "#eaff00" }}>
+                    {program.name}
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          ))}
         </Box>
       </Stack>
 
@@ -239,7 +239,6 @@ export default function WorkoutPage() {
 
         <DialogContent>
           <Stack spacing={2} sx={{ mt: 1, minWidth: 250 }}>
-
             <Button
               variant="contained"
               onClick={async () => {
@@ -259,7 +258,6 @@ export default function WorkoutPage() {
             >
               Template
             </Button>
-
           </Stack>
         </DialogContent>
       </Dialog>
